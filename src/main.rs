@@ -7,7 +7,7 @@ extern crate pretty_env_logger;
 extern crate log;
 
 mod command;
-use crate::command::{util::*, fun::*,};
+use crate::command::{fun::*, util::*};
 
 struct Data {} // User data, which is stored and accessible in all command invocations
 type Error = Box<dyn std::error::Error + Send + Sync>;

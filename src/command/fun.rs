@@ -1,6 +1,5 @@
-
-use rand::Rng;
 use rand::seq::SliceRandom;
+use rand::Rng;
 
 use crate::Context;
 use crate::Error;
@@ -8,48 +7,17 @@ use crate::Error;
 /// MAKE HER BLEAT
 #[poise::command(slash_command)]
 pub async fn bleat(ctx: Context<'_>) -> Result<(), Error> {
-
     let sounds: Vec<&str> = [
-        "rah",
-        "grr",
-        "bah",
-        "bleat",
-        "yippee",
-        "woohoo",
-        "huh",
-        "wha",
-        "buh",
-        "whuh",
-        "oh",
-        "yeag",
-        "yeab",
-        "yeas",
-        "mweee",
-        "mweh",
-        "bwah",
-    ].to_vec();
-    
-    let faces: Vec<&str> = vec![
-        "xp",
-        "x3",
-        ":3",
-        ":3c",
-        ";3",
-        ";3c",
-        "=p",
-    ].to_vec();
+        "rah", "grr", "bah", "bleat", "yippee", "woohoo", "huh", "wha", "buh", "whuh", "oh",
+        "yeag", "yeab", "yeas", "mweee", "mweh", "bwah",
+    ]
+    .to_vec();
 
-    let exclamation: Vec<&str> = vec![
-        "!",
-        "1",
-        "?",
-        "-",
-        ",",
-        ".",
-    ].to_vec();
+    let faces: Vec<&str> = vec!["xp", "x3", ":3", ":3c", ";3", ";3c", "=p"].to_vec();
+
+    let exclamation: Vec<&str> = vec!["!", "1", "?", "-", ",", "."].to_vec();
 
     fn modify_sound(input: &str) -> String {
-
         // Create an RNG
         let mut rng = rand::thread_rng();
 
@@ -73,26 +41,37 @@ pub async fn bleat(ctx: Context<'_>) -> Result<(), Error> {
             let count = rand::thread_rng().gen_range(1..3);
             let mut new_sound: String = String::new();
             for _i in 0..count {
-                new_sound.push_str(&modify_sound(sounds.choose(&mut rand::thread_rng()).unwrap()));
+                new_sound.push_str(&modify_sound(
+                    sounds.choose(&mut rand::thread_rng()).unwrap(),
+                ));
                 new_sound.push(' ');
             }
             new_sound
         }
         11 => {
-            format!("am so {}ing awesome", modify_sound(sounds.choose(&mut rand::thread_rng()).unwrap()))
+            format!(
+                "am so {}ing awesome",
+                modify_sound(sounds.choose(&mut rand::thread_rng()).unwrap())
+            )
         }
         12 => {
-            format!("feel so {} like a {} machine", modify_sound(sounds.choose(&mut rand::thread_rng()).unwrap()), modify_sound(sounds.choose(&mut rand::thread_rng()).unwrap()))
+            format!(
+                "feel so {} like a {} machine",
+                modify_sound(sounds.choose(&mut rand::thread_rng()).unwrap()),
+                modify_sound(sounds.choose(&mut rand::thread_rng()).unwrap())
+            )
         }
         13 => {
-            format!("do it {}", modify_sound(sounds.choose(&mut rand::thread_rng()).unwrap()))
+            format!(
+                "do it {}",
+                modify_sound(sounds.choose(&mut rand::thread_rng()).unwrap())
+            )
         }
         _ => unreachable!(),
-
     };
-    
+
     ctx.say(sound) // This unwrap will never return None. We promise this slice will always be non empty.
-    .await?;
+        .await?;
     info!("Executed command `bleat` successfully");
     Ok(())
 }
