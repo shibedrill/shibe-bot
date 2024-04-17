@@ -20,7 +20,7 @@ pub async fn age(
 #[poise::command(slash_command)]
 pub async fn info(ctx: Context<'_>) -> Result<(), Error> {
     ctx.say(format!(
-        "DeerBot ReBleated v{} was created by Shibe Drill (@shibedrill) using Rust and Poise.\nVisit her website: https://riverdev.carrd.co\nCheck out her Github: https://github.com/shibedrill",
+        "DeerBot ReBleated v{} was created by Shibe Drill (@shibedrill) using Rust and Poise.\nVisit her website: https://riverdev.carrd.co\nCheck out her Github: https://github.com/shibedrill\nPoise: https://docs.rs/poise/latest/poise/\nRust: https://www.rust-lang.org/",
         env!("CARGO_PKG_VERSION")
     ))
     .await?;
