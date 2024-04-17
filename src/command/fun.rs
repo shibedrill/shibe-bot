@@ -7,15 +7,18 @@ use crate::Error;
 /// MAKE HER BLEAT
 #[poise::command(slash_command)]
 pub async fn bleat(ctx: Context<'_>) -> Result<(), Error> {
+    #[allow(unused_variables)]
     let sounds: Vec<&str> = [
         "rah", "grr", "bah", "bleat", "yippee", "woohoo", "huh", "wha", "buh", "whuh", "oh",
         "yeag", "yeab", "yeas", "mweee", "mweh", "bwah",
     ]
     .to_vec();
 
-    let faces: Vec<&str> = vec!["xp", "x3", ":3", ":3c", ";3", ";3c", "=p"].to_vec();
+    #[allow(unused_variables)]
+    let faces: Vec<&str> = vec!["xp", "x3", ":3", ":3c", ";3", ";3c", "=p"];
 
-    let exclamation: Vec<&str> = vec!["!", "1", "?", "-", ",", "."].to_vec();
+    #[allow(unused_variables)]
+    let exclamation: Vec<&str> = vec!["!", "1", "?", "-", ",", "."];
 
     fn modify_sound(input: &str) -> String {
         // Create an RNG
