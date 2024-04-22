@@ -36,7 +36,7 @@ impl<T: Serialize + for<'a> Deserialize<'a>> SettingsManager<T> {
     /// Serialize settings structure to the stored path. Returns None if
     /// unsuccessful.
     pub fn store(&self) -> Option<()> {
-        let data = serde_json::to_string(&self.internal).ok()?;
+        let data = serde_json::to_string_pretty(&self.internal).ok()?;
         let mut file = std::fs::File::create(&self.path).ok()?;
         let _ = file.write(data.as_bytes());
         Some(())

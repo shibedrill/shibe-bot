@@ -1,5 +1,4 @@
-
-use std::sync::{Arc};
+use std::sync::Arc;
 use tokio::sync::Mutex;
 
 use dotenv::dotenv;
@@ -13,12 +12,15 @@ extern crate log;
 use serde::*;
 
 mod command;
-use crate::{command::{fun::*, util::*}, settings::SettingsManager};
+use crate::{
+    command::{fun::*, util::*},
+    settings::SettingsManager,
+};
 
 mod settings;
 
 struct Data {
-    config_manager: Arc<Mutex<SettingsManager<Settings>>>
+    config_manager: Arc<Mutex<SettingsManager<Settings>>>,
 } // User data, which is stored and accessible in all command invocations
 type Error = Box<dyn std::error::Error + Send + Sync>;
 type Context<'a> = poise::Context<'a, Data, Error>;
@@ -54,7 +56,7 @@ async fn main() {
         .setup(|ctx, _ready, framework| {
             Box::pin(async move {
                 poise::builtins::register_globally(ctx, &framework.options().commands).await?;
-                Ok(Data {config_manager})
+                Ok(Data { config_manager })
             })
         })
         .build();
