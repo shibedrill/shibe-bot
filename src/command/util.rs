@@ -37,7 +37,7 @@ pub async fn add_channel(
     if let Some(channel_ok) = channel {
         let config = &mut ctx.data().config_manager.lock().await;
         let channel_id = { u64::from(channel_ok.id()) };
-        config.channels.push(channel_id);
+        config.channels.push(channel_ok);
         config.store().unwrap();
         ctx.say(format!(
             "Successfully added <#{}> to the channel registry.",
@@ -55,9 +55,14 @@ pub async fn add_channel(
 #[poise::command(slash_command)]
 pub async fn list_channels(ctx: Context<'_>) -> Result<(), Error> {
     let config = &mut ctx.data().config_manager.lock().await;
+    let mut channel_ids: Vec<u64> = vec![];
+    config
+        .channels
+        .iter()
+        .for_each(|c| channel_ids.push(u64::from(c.id())));
     ctx.say(format!(
         "Current channel IDs in registry: {:#?}",
-        config.channels
+        channel_ids
     ))
     .await?;
     info!("Executed command `list_channels` successfully");

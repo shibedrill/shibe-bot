@@ -5,12 +5,12 @@ use serde::de::Deserialize;
 use serde::ser::Serialize;
 
 /// A utility structure to manage a settings structure.
-pub struct SettingsManager<T: Serialize + for<'a> Deserialize<'a>> {
+pub struct SettingsManager<T: Default + Serialize + for<'a> Deserialize<'a>> {
     internal: T,
     path: String,
 }
 
-impl<T: Serialize + for<'a> Deserialize<'a>> SettingsManager<T> {
+impl<T: Default + Serialize + for<'a> Deserialize<'a>> SettingsManager<T> {
     /// Instantiate new self if the path contains a valid serialization of
     /// the settings structure.
     pub fn load(path: &str) -> Option<Self> {
@@ -23,7 +23,10 @@ impl<T: Serialize + for<'a> Deserialize<'a>> SettingsManager<T> {
             path: String::from(path),
         })
     }
-    /// Update the data stored in the settings.
+    /// Update the data stored in the settings, if it has been modified on the 
+    /// disk but not in memory. Because this is a stupid method, it will most
+    /// likely go unused by most.
+    #[allow(dead_code)]
     pub fn update(&mut self) -> Option<()> {
         let mut file = std::fs::File::open(self.path.clone()).ok()?;
         let mut data = String::new();
@@ -49,7 +52,7 @@ impl<T: Serialize + for<'a> Deserialize<'a>> SettingsManager<T> {
     }
 }
 
-impl<T: Serialize + for<'a> Deserialize<'a>> Deref for SettingsManager<T> {
+impl<T: Default + Serialize + for<'a> Deserialize<'a>> Deref for SettingsManager<T> {
     type Target = T;
 
     fn deref(&self) -> &Self::Target {
@@ -57,7 +60,7 @@ impl<T: Serialize + for<'a> Deserialize<'a>> Deref for SettingsManager<T> {
     }
 }
 
-impl<T: Serialize + for<'a> Deserialize<'a>> DerefMut for SettingsManager<T> {
+impl<T: Default + Serialize + for<'a> Deserialize<'a>> DerefMut for SettingsManager<T> {
     fn deref_mut(&mut self) -> &mut Self::Target {
         &mut self.internal
     }
