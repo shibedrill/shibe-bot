@@ -55,7 +55,7 @@ async fn main() {
     // Set up framework
     let framework = poise::Framework::builder()
         .options(poise::FrameworkOptions {
-            commands: vec![age(), info(), bleat(), add_channel(), list_channels()],
+            commands: vec![age(), info(), add_channel(), list_channels()],
             ..Default::default()
         })
         .setup(|ctx, _ready, framework| {

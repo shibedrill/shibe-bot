@@ -304,20 +304,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "7e962a19be5cfc3f3bf6dd8f61eb50107f356ad6270fbb3ed41476571db78be5"
 
 [[package]]
-name = "deerbot-rebleated"
-version = "0.1.0"
-dependencies = [
- "dotenv",
- "log",
- "poise",
- "pretty_env_logger",
- "rand",
- "serde",
- "serde_json",
- "tokio",
-]
-
-[[package]]
 name = "deranged"
 version = "0.3.11"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1340,6 +1326,20 @@ dependencies = [
  "cfg-if",
  "cpufeatures",
  "digest",
+]
+
+[[package]]
+name = "shibe-bot"
+version = "0.1.0"
+dependencies = [
+ "dotenv",
+ "log",
+ "poise",
+ "pretty_env_logger",
+ "rand",
+ "serde",
+ "serde_json",
+ "tokio",
 ]
 
 [[package]]
