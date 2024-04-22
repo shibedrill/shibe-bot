@@ -43,9 +43,9 @@ async fn main() {
     pretty_env_logger::init();
 
     // Configure persistent options
-    let config = Settings { channels: vec![] };
-    let config_manager = Arc::new(Mutex::new(SettingsManager::manage("settings.json", config)));
-    config_manager.lock().await.update();
+    let config_manager: Arc<Mutex<SettingsManager<Settings>>> = Arc::new(Mutex::new(
+        SettingsManager::load("settings.json").expect("Unable to load config!"),
+    ));
 
     // Set up framework
     let framework = poise::Framework::builder()
