@@ -74,7 +74,15 @@ async fn main() {
             // +---------------------------------------------------------+
             // |                    ADD COMMANDS HERE                    |
             // +---------------------------------------------------------+
-            commands: vec![age(), info(), add_channel(), remove_channel(), list_channels(), shutdown(), restart()],
+            commands: vec![
+                age(),
+                info(),
+                add_channel(),
+                remove_channel(),
+                list_channels(),
+                shutdown(),
+                restart(),
+            ],
             initialize_owners: true,
             ..Default::default()
         })
@@ -107,7 +115,18 @@ async fn main() {
         .unwrap();
     info!("Built client successfully");
 
-    info!("Registered owner: {:?}", client.http.get_current_application_info().await.unwrap().owner.unwrap().name);
+    // List the owner
+    info!(
+        "Registered owner: {:?}",
+        client
+            .http
+            .get_current_application_info()
+            .await
+            .unwrap()
+            .owner
+            .unwrap()
+            .name
+    );
 
     // Finally start everything. Nothing after this should be reachable normally.
     info!("Starting client");
