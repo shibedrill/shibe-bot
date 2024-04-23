@@ -74,7 +74,7 @@ async fn main() {
             // +---------------------------------------------------------+
             // |                    ADD COMMANDS HERE                    |
             // +---------------------------------------------------------+
-            commands: vec![age(), info(), add_channel(), list_channels(), shutdown(), restart()],
+            commands: vec![age(), info(), add_channel(), remove_channel(), list_channels(), shutdown(), restart()],
             initialize_owners: true,
             ..Default::default()
         })

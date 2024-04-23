@@ -53,6 +53,32 @@ pub async fn add_channel(
     Ok(())
 }
 
+/// Remove information from the shared settings
+#[poise::command(slash_command)]
+pub async fn remove_channel(
+    ctx: Context<'_>,
+    #[description = "Selected channel"] channel: Option<serenity::Channel>,
+) -> Result<(), Error> {
+    ctx.defer_ephemeral().await?;
+    if let Some(channel_ok) = channel {
+        let config = &mut ctx.data().config_manager.lock().await;
+        let channel_id = { u64::from(channel_ok.id()) };
+        //let found =  config.channels.iter().find(|c| c.id() == channel_ok.id());
+        config.channels.retain(|c| c.id() != channel_ok.id());
+        config.store().unwrap();
+        ctx.say(format!(
+            "Successfully removed <#{}> from the channel registry.",
+            channel_id
+        ))
+        .await?;
+        info!("Executed command `remove_channel` successfully");
+    } else {
+        ctx.say("Channel with supplied ID was not found.").await?;
+        error!("Failed to execute command `remove_channel`.");
+    }
+    Ok(())
+}
+
 #[poise::command(slash_command)]
 pub async fn list_channels(ctx: Context<'_>) -> Result<(), Error> {
     ctx.defer_ephemeral().await?;
