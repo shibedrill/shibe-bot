@@ -20,6 +20,8 @@ pub async fn meow(ctx: Context<'_>) -> Result<(), Error> {
         let mut rng = rand::thread_rng();
         match rng.gen_bool(0.1) {
             true => "woof",
+            // Will never return None. The source is staticaly defined.
+            // We know it will always have items in it.
             false => meows.choose(&mut rng).unwrap(),
         }
     };
@@ -27,3 +29,4 @@ pub async fn meow(ctx: Context<'_>) -> Result<(), Error> {
     info!("Executed command `meow` successfully");
     Ok(())
 }
+
