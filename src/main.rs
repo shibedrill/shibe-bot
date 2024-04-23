@@ -83,11 +83,13 @@ async fn main() {
                 add_channel(),
                 remove_channel(),
                 list_channels(),
+                invite(),
                 // Dev
                 shutdown(),
                 restart(),
                 // Fun
                 meow(),
+                penis(),
             ],
             initialize_owners: true,
             ..Default::default()

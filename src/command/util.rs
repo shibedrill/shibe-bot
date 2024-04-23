@@ -3,6 +3,21 @@ use poise::serenity_prelude as serenity;
 use crate::Context;
 use crate::Error;
 
+const INVITE_LINK: &str = "https://discord.com/oauth2/authorize?client_id=1030701552941412382&permissions=116736&response_type=code&redirect_uri=https%3A%2F%2Fdiscordapp.com%2Foauth2%2Fauthorize%3F%26client_id%3D1030701552941412382%26scope%3Dbot&scope=guilds+bot";
+
+/// Add this bot to your server
+#[poise::command(slash_command)]
+pub async fn invite(ctx: Context<'_>) -> Result<(), Error> {
+    ctx.defer_ephemeral().await?;
+    ctx.say(format!(
+        "To add me to your server, click [this link]({}) and enable all the requested permissions.",
+        INVITE_LINK
+    ))
+    .await?;
+    info!("Executed command `invite` successfully");
+    Ok(())
+}
+
 /// Displays your or another user's account creation date
 #[poise::command(slash_command)]
 pub async fn age(
@@ -48,7 +63,7 @@ pub async fn add_channel(
         info!("Executed command `add_channel` successfully");
     } else {
         ctx.say("Channel with supplied ID was not found.").await?;
-        error!("Failed to execute command `add_channel`.");
+        error!("Failed to execute command `add_channel`");
     }
     Ok(())
 }
