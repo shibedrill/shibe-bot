@@ -23,7 +23,7 @@ impl<T: Default + Serialize + for<'a> Deserialize<'a>> SettingsManager<T> {
             path: String::from(path),
         })
     }
-    /// Update the data stored in the settings, if it has been modified on the 
+    /// Update the data stored in the settings, if it has been modified on the
     /// disk but not in memory. Because this is a stupid method, it will most
     /// likely go unused by most.
     #[allow(dead_code)]

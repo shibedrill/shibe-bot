@@ -20,7 +20,7 @@ pub async fn age(
 #[poise::command(slash_command)]
 pub async fn info(ctx: Context<'_>) -> Result<(), Error> {
     ctx.say(format!(
-        "DeerBot ReBleated v{} was created by Shibe Drill (@shibedrill) using Rust and Poise.\nVisit her website: https://riverdev.carrd.co\nCheck out her Github: https://github.com/shibedrill\nPoise: https://docs.rs/poise/latest/poise/\nRust: https://www.rust-lang.org/",
+        "Shibe Bot v{} was created by Shibe Drill (@shibedrill) using Rust and Poise.\nVisit her website: https://riverdev.carrd.co\nCheck out her Github: https://github.com/shibedrill\nPoise: https://docs.rs/poise/latest/poise/\nRust: https://www.rust-lang.org/",
         env!("CARGO_PKG_VERSION")
     ))
     .await?;
@@ -34,6 +34,7 @@ pub async fn add_channel(
     ctx: Context<'_>,
     #[description = "Selected channel"] channel: Option<serenity::Channel>,
 ) -> Result<(), Error> {
+    ctx.defer_ephemeral().await?;
     if let Some(channel_ok) = channel {
         let config = &mut ctx.data().config_manager.lock().await;
         let channel_id = { u64::from(channel_ok.id()) };
@@ -54,6 +55,7 @@ pub async fn add_channel(
 
 #[poise::command(slash_command)]
 pub async fn list_channels(ctx: Context<'_>) -> Result<(), Error> {
+    ctx.defer_ephemeral().await?;
     let config = &mut ctx.data().config_manager.lock().await;
     let mut channel_ids: Vec<u64> = vec![];
     config
@@ -61,7 +63,7 @@ pub async fn list_channels(ctx: Context<'_>) -> Result<(), Error> {
         .iter()
         .for_each(|c| channel_ids.push(u64::from(c.id())));
     ctx.say(format!(
-        "Current channel IDs in registry: {:#?}",
+        "Current channel IDs in registry: \n{:#?}",
         channel_ids
     ))
     .await?;

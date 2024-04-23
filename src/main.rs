@@ -1,38 +1,54 @@
+// Tokio async crap
 use std::sync::Arc;
 use tokio::sync::Mutex;
 
+// For secure credential handling
 use dotenv::dotenv;
 
+// Poise and Serenity - Framework and API prelude
 use poise::serenity_prelude as serenity;
 use serenity::Channel;
 
+// Logging stuff
 extern crate pretty_env_logger;
 #[macro_use]
 extern crate log;
 
+// For managing config storage
 use serde::*;
+mod settings;
+use crate::settings::*;
 
+// Bot commands
 mod command;
-use crate::{
-    command::{fun::*, util::*},
-    settings::SettingsManager,
+use crate::command::{
+    // Commands for development and testing
+    devel::*,
+    // Useful commands for mods
+    util::*,
 };
 
-mod settings;
-
+// Data passed to every command (shared state)
 struct Data {
     config_manager: Arc<Mutex<SettingsManager<Settings>>>,
-} // User data, which is stored and accessible in all command invocations
+}
+
+// Errors returnable by a command
 type Error = Box<dyn std::error::Error + Send + Sync>;
+
+// The full context passed to a command
 type Context<'a> = poise::Context<'a, Data, Error>;
 
+// The structure making up the configuration
 #[derive(Debug, Serialize, Deserialize, Default)]
 struct Settings {
     channels: Vec<Channel>,
 }
 
+// Path at which our settings are stored (currently PWD)
 const SETTINGS_PATH: &str = "settings.json";
 
+// Main function for setup
 #[tokio::main]
 async fn main() {
     // Get secure env vars from .env file
@@ -55,12 +71,17 @@ async fn main() {
     // Set up framework
     let framework = poise::Framework::builder()
         .options(poise::FrameworkOptions {
-            commands: vec![age(), info(), add_channel(), list_channels()],
+            // +---------------------------------------------------------+
+            // |                    ADD COMMANDS HERE                    |
+            // +---------------------------------------------------------+
+            commands: vec![age(), info(), add_channel(), list_channels(), shutdown()],
+            initialize_owners: true,
             ..Default::default()
         })
         .setup(|ctx, _ready, framework| {
             Box::pin(async move {
                 poise::builtins::register_globally(ctx, &framework.options().commands).await?;
+                // Shared data has to go here!!!
                 Ok(Data { config_manager })
             })
         })
@@ -69,6 +90,7 @@ async fn main() {
     // Log pertinent info
     info!("Built framework successfully");
     {
+        // List registered commands
         let mut commands: Vec<&str> = vec![];
         framework
             .options()
@@ -78,10 +100,16 @@ async fn main() {
         info!("Registered commands: {:?}", commands);
     }
 
-    let client = serenity::ClientBuilder::new(token, intents)
+    // Build client
+    let mut client = serenity::ClientBuilder::new(token, intents)
         .framework(framework)
-        .await;
+        .await
+        .unwrap();
     info!("Built client successfully");
+
+    info!("Registered owner: {:?}", client.http.get_current_application_info().await.unwrap().owner.unwrap().name);
+
+    // Finally start everything. Nothing after this should be reachable normally.
     info!("Starting client");
-    client.unwrap().start().await.unwrap();
+    client.start().await.unwrap();
 }
