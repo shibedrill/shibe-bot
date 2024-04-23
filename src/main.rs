@@ -24,6 +24,8 @@ mod command;
 use crate::command::{
     // Commands for development and testing
     devel::*,
+    // Fun!!!
+    fun::*,
     // Useful commands for mods
     util::*,
 };
@@ -75,13 +77,17 @@ async fn main() {
             // |                    ADD COMMANDS HERE                    |
             // +---------------------------------------------------------+
             commands: vec![
+                // Util
                 age(),
                 info(),
                 add_channel(),
                 remove_channel(),
                 list_channels(),
+                // Dev
                 shutdown(),
                 restart(),
+                // Fun
+                meow(),
             ],
             initialize_owners: true,
             ..Default::default()
