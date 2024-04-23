@@ -74,7 +74,7 @@ async fn main() {
             // +---------------------------------------------------------+
             // |                    ADD COMMANDS HERE                    |
             // +---------------------------------------------------------+
-            commands: vec![age(), info(), add_channel(), list_channels(), shutdown()],
+            commands: vec![age(), info(), add_channel(), list_channels(), shutdown(), restart()],
             initialize_owners: true,
             ..Default::default()
         })
@@ -112,4 +112,5 @@ async fn main() {
     // Finally start everything. Nothing after this should be reachable normally.
     info!("Starting client");
     client.start().await.unwrap();
+    info!("All tasks finished, shutting down");
 }
