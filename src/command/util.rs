@@ -11,7 +11,9 @@ const INVITE_LINK: &str = "https://discord.com/oauth2/authorize?client_id=103070
 pub async fn invite(ctx: Context<'_>) -> Result<(), Error> {
     ctx.defer_ephemeral().await?;
     ctx.say(format!(
-        "To add me to your server, click [this link]({}) and enable all the requested permissions.",
+        "To add me to your server, click [this link]({}), or open it in the \
+        browser and enable all the requested permissions. Then select your \
+        server to add it.",
         INVITE_LINK
     ))
     .await?;
@@ -37,10 +39,10 @@ pub async fn age(
 pub async fn info(ctx: Context<'_>) -> Result<(), Error> {
     ctx.say(format!(
         "Shibe Bot v{} was created by Shibe Drill (@shibedrill) using Rust and \
-        Poise.\nVisit her website: https://riverdev.carrd.co\nCheck out her \
-        Github: https://github.com/shibedrill/shibe-bot\n\
-        Poise: https://docs.rs/poise/latest/poise/\n\
-        Rust: https://www.rust-lang.org/",
+        Poise.\nVisit her website: <https://riverdev.carrd.co>\nCheck out her \
+        Github: <https://github.com/shibedrill/shibe-bot>\n\
+        Poise: <https://docs.rs/poise/latest/poise/>\n\
+        Rust: <https://www.rust-lang.org/>",
        env!("CARGO_PKG_VERSION")
     ))
     .await?;
