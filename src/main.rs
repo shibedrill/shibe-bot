@@ -141,6 +141,12 @@ async fn main() {
 
     // Finally start everything. Nothing after this should be reachable normally.
     info!("Starting client");
+    println!(        "Shibe Bot v{} was created by Shibe Drill (@shibedrill) using Rust and \
+    Poise.\nVisit her website: https://riverdev.carrd.co\nCheck out her \
+    Github: https://github.com/shibedrill/shibe-bot\n\
+    Poise: https://docs.rs/poise/latest/poise/\n\
+    Rust: https://www.rust-lang.org/",
+   env!("CARGO_PKG_VERSION"));
     client.start().await.unwrap();
     info!("All tasks finished, shutting down");
 }
