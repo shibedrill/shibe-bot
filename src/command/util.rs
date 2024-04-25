@@ -43,7 +43,7 @@ pub async fn info(ctx: Context<'_>) -> Result<(), Error> {
         Github: <https://github.com/shibedrill/shibe-bot>\n\
         Poise: <https://docs.rs/poise/latest/poise/>\n\
         Rust: <https://www.rust-lang.org/>",
-       env!("CARGO_PKG_VERSION")
+        env!("CARGO_PKG_VERSION")
     ))
     .await?;
     info!("Executed command `info` successfully");
@@ -54,24 +54,18 @@ pub async fn info(ctx: Context<'_>) -> Result<(), Error> {
 #[poise::command(slash_command)]
 pub async fn add_channel(
     ctx: Context<'_>,
-    #[description = "Selected channel"] channel: Option<serenity::Channel>,
+    #[description = "Selected channel"] channel: serenity::Channel,
 ) -> Result<(), Error> {
-    ctx.defer_ephemeral().await?;
-    if let Some(channel_ok) = channel {
-        let config = &mut ctx.data().config_manager.lock().await;
-        let channel_id = { u64::from(channel_ok.id()) };
-        config.channels.push(channel_ok);
-        config.store().unwrap();
-        ctx.say(format!(
-            "Successfully added <#{}> to the channel registry.",
-            channel_id
-        ))
-        .await?;
-        info!("Executed command `add_channel` successfully");
-    } else {
-        ctx.say("Channel with supplied ID was not found.").await?;
-        error!("Failed to execute command `add_channel`");
-    }
+    let config = &mut ctx.data().config_manager.lock().await;
+    let channel_id = { u64::from(channel.id()) };
+    config.channels.push(channel);
+    config.store().unwrap();
+    ctx.say(format!(
+        "Successfully added <#{}> to the channel registry.",
+        channel_id
+    ))
+    .await?;
+    info!("Executed command `add_channel` successfully");
     Ok(())
 }
 
@@ -79,24 +73,19 @@ pub async fn add_channel(
 #[poise::command(slash_command)]
 pub async fn remove_channel(
     ctx: Context<'_>,
-    #[description = "Selected channel"] channel: Option<serenity::Channel>,
+    #[description = "Selected channel"] channel: serenity::Channel,
 ) -> Result<(), Error> {
     ctx.defer_ephemeral().await?;
-    if let Some(channel_ok) = channel {
-        let config = &mut ctx.data().config_manager.lock().await;
-        let channel_id = { u64::from(channel_ok.id()) };
-        config.channels.retain(|c| c.id() != channel_ok.id());
-        config.store().unwrap();
-        ctx.say(format!(
-            "Successfully removed <#{}> from the channel registry.",
-            channel_id
-        ))
-        .await?;
-        info!("Executed command `remove_channel` successfully");
-    } else {
-        ctx.say("Channel with supplied ID was not found.").await?;
-        error!("Failed to execute command `remove_channel`.");
-    }
+    let config = &mut ctx.data().config_manager.lock().await;
+    let channel_id = { u64::from(channel.id()) };
+    config.channels.retain(|c| c.id() != channel.id());
+    config.store().unwrap();
+    ctx.say(format!(
+        "Successfully removed <#{}> from the channel registry.",
+        channel_id
+    ))
+    .await?;
+    info!("Executed command `remove_channel` successfully");
     Ok(())
 }
 
@@ -107,9 +96,9 @@ pub async fn list_channels(ctx: Context<'_>) -> Result<(), Error> {
     let config = &mut ctx.data().config_manager.lock().await;
     let mut channel_ids: Vec<u64> = vec![];
     config
-        .channels
-        .iter()
-        .for_each(|c| channel_ids.push(u64::from(c.id())));
+    .channels
+    .iter()
+    .for_each(|c| channel_ids.push(u64::from(c.id())));
     ctx.say(format!(
         "Current channel IDs in registry: \n{:#?}",
         channel_ids
