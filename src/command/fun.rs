@@ -9,14 +9,14 @@ use rand::*;
 #[poise::command(slash_command)]
 pub async fn meow(ctx: Context<'_>) -> Result<(), Error> {
     let meows = [
-        "meow",
-        "mrow",
-        "mrrrp",
-        "mraaw",
-        "bwrrrr",
-        "mrrghh",
-        "mrowwwwwwwwwwww",
-        "FUCK",
+    "meow",
+    "mrow",
+    "mrrrp",
+    "mraaw",
+    "bwrrrr",
+    "mrrghh",
+    "mrowwwwwwwwwwww",
+    "FUCK",
     ];
     let response = {
         let mut rng = rand::thread_rng();
@@ -36,18 +36,14 @@ pub async fn meow(ctx: Context<'_>) -> Result<(), Error> {
 #[poise::command(slash_command)]
 pub async fn penis(
     ctx: Context<'_>,
-    #[description = "The target user"] target: Option<serenity::User>,
+    #[description = "The target user"] target: serenity::User,
 ) -> Result<(), Error> {
-    if let Some(target_unwrapped) = target {
-        ctx.say(format!(
-            "<@{}> has been penised. they must penis another user to become un-penised",
-            target_unwrapped.id
-        ))
-        .await?;
-        info!("Executed command `penis` successfully");
-    } else {
-        error!("Failed to execute command `penis`");
-    }
+    ctx.say(format!(
+        "<@{}> has been penised. they must penis another user to become un-penised",
+        target.id
+    ))
+    .await?;
+    info!("Executed command `penis` successfully");
     Ok(())
 }
 
@@ -55,33 +51,33 @@ pub async fn penis(
 #[poise::command(slash_command)]
 pub async fn eightball(ctx: Context<'_>) -> Result<(), Error> {
     let responses = [
-        "It is certain",
-        "It is decidedly so",
-        "Without a doubt",
-        "Yes definitely",
-        "You may rely on it",
-        "As I see it, yes",
-        "Most likely",
-        "Outlook good",
-        "Yes",
-        "Signs point to yes",
-        "Reply hazy, try again",
-        "Ask again later",
-        "Better not to tell you now",
-        "Cannot predict now",
-        "Concentrate and ask again",
-        "Don't count on it",
-        "My reply is no",
-        "My sources say no",
-        "Outlook not so good",
-        "Very doubtful",
+    "It is certain",
+    "It is decidedly so",
+    "Without a doubt",
+    "Yes definitely",
+    "You may rely on it",
+    "As I see it, yes",
+    "Most likely",
+    "Outlook good",
+    "Yes",
+    "Signs point to yes",
+    "Reply hazy, try again",
+    "Ask again later",
+    "Better not to tell you now",
+    "Cannot predict now",
+    "Concentrate and ask again",
+    "Don't count on it",
+    "My reply is no",
+    "My sources say no",
+    "Outlook not so good",
+    "Very doubtful",
     ];
     let response = {
         let mut rng = rand::thread_rng();
         responses.choose(&mut rng).unwrap()
     };
     ctx.say(format!("Magic 8-ball says: '{}'", *response))
-        .await?;
+    .await?;
     info!("Executed command `eightball` successfully");
     Ok(())
 }
@@ -90,18 +86,14 @@ pub async fn eightball(ctx: Context<'_>) -> Result<(), Error> {
 #[poise::command(slash_command)]
 pub async fn bite(
     ctx: Context<'_>,
-    #[description = "The target user"] target: Option<serenity::User>,
+    #[description = "The target user"] target: serenity::User,
 ) -> Result<(), Error> {
-    if let Some(target_unwrapped) = target {
-        ctx.say(format!(
-            "<@{}> has been bitten by <@{}>",
-            target_unwrapped.id,
-            ctx.author().id,
-        ))
-        .await?;
-        info!("Executed command `bite` successfully");
-    } else {
-        error!("Failed to execute command `bite`");
-    }
+    ctx.say(format!(
+        "<@{}> has been bitten by <@{}>",
+        target.id,
+        ctx.author().id,
+    ))
+    .await?;
+    info!("Executed command `bite` successfully");
     Ok(())
 }
