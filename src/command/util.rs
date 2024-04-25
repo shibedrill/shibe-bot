@@ -79,7 +79,6 @@ pub async fn remove_channel(
     if let Some(channel_ok) = channel {
         let config = &mut ctx.data().config_manager.lock().await;
         let channel_id = { u64::from(channel_ok.id()) };
-        //let found =  config.channels.iter().find(|c| c.id() == channel_ok.id());
         config.channels.retain(|c| c.id() != channel_ok.id());
         config.store().unwrap();
         ctx.say(format!(
