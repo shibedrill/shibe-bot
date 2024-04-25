@@ -1,4 +1,5 @@
 use poise::serenity_prelude as serenity;
+use rand::Rng;
 
 use crate::Context;
 use crate::Error;
@@ -43,7 +44,7 @@ pub async fn info(ctx: Context<'_>) -> Result<(), Error> {
     Ok(())
 }
 
-/// Add information to the shared settings
+/// Add channel to the registry
 #[poise::command(slash_command)]
 pub async fn add_channel(
     ctx: Context<'_>,
@@ -68,7 +69,7 @@ pub async fn add_channel(
     Ok(())
 }
 
-/// Remove information from the shared settings
+/// Remove channel from the registry
 #[poise::command(slash_command)]
 pub async fn remove_channel(
     ctx: Context<'_>,
@@ -94,6 +95,7 @@ pub async fn remove_channel(
     Ok(())
 }
 
+/// List channels held in the registry
 #[poise::command(slash_command)]
 pub async fn list_channels(ctx: Context<'_>) -> Result<(), Error> {
     ctx.defer_ephemeral().await?;
@@ -109,5 +111,24 @@ pub async fn list_channels(ctx: Context<'_>) -> Result<(), Error> {
     ))
     .await?;
     info!("Executed command `list_channels` successfully");
+    Ok(())
+}
+
+/// Generate a random number, supply 1 for coin toss
+#[poise::command(slash_command)]
+pub async fn dice(
+    ctx: Context<'_>,
+    #[description = "The upper limit of the random number"] bound: u32,
+) -> Result<(), Error> {
+    let answer: u32 = {
+        let mut rng = rand::thread_rng();
+        rng.gen_range(0..=bound)
+    };
+    ctx.say(format!(
+        "Rolled a random number from 0 to {}, got: {}",
+        bound, answer
+    ))
+    .await?;
+    info!("Executed command `dice` successfully");
     Ok(())
 }

@@ -84,12 +84,14 @@ async fn main() {
                 remove_channel(),
                 list_channels(),
                 invite(),
+                dice(),
                 // Dev
                 shutdown(),
                 restart(),
                 // Fun
                 meow(),
                 penis(),
+                eightball(),
             ],
             initialize_owners: true,
             ..Default::default()
