@@ -85,3 +85,23 @@ pub async fn eightball(ctx: Context<'_>) -> Result<(), Error> {
     info!("Executed command `eightball` successfully");
     Ok(())
 }
+
+/// BITE BITE BITE
+#[poise::command(slash_command)]
+pub async fn bite(
+    ctx: Context<'_>,
+    #[description = "The target user"] target: Option<serenity::User>,
+) -> Result<(), Error> {
+    if let Some(target_unwrapped) = target {
+        ctx.say(format!(
+            "<@{}> has been bitten by <@{}>",
+            target_unwrapped.id,
+            ctx.author().id,
+        ))
+        .await?;
+        info!("Executed command `bite` successfully");
+    } else {
+        error!("Failed to execute command `bite`");
+    }
+    Ok(())
+}

@@ -92,6 +92,7 @@ async fn main() {
                 meow(),
                 penis(),
                 eightball(),
+                bite(),
             ],
             initialize_owners: true,
             ..Default::default()
