@@ -114,21 +114,39 @@ pub async fn list_channels(ctx: Context<'_>) -> Result<(), Error> {
     Ok(())
 }
 
-/// Generate a random number, supply 1 for coin toss
+/// Roll a dice with a certain amount of sides, 2 sides is a coin toss
 #[poise::command(slash_command)]
 pub async fn dice(
     ctx: Context<'_>,
-    #[description = "The upper limit of the random number"] bound: u32,
+    #[description = "The amount of sides on the dice"] sides: u32,
 ) -> Result<(), Error> {
     let answer: u32 = {
         let mut rng = rand::thread_rng();
-        rng.gen_range(0..=bound)
+        rng.gen_range(1..=sides)
     };
-    ctx.say(format!(
-        "Rolled a random number from 0 to {}, got: {}",
-        bound, answer
-    ))
-    .await?;
+    let response = match sides {
+        0 | 1 => {
+            ctx.defer_ephemeral().await?;
+            String::from("You cannot roll a dice with 0 or 1 sides.")
+        }
+        2 => {
+            format!(
+                "Coin toss landed on: {}",
+                match answer {
+                    1 => "heads",
+                    2 => "tails",
+                    _ => unreachable!(),
+                }
+            )
+        }
+        _ => {
+            format!(
+                "Rolled a random number from 1 to {}, got: {}",
+                sides, answer
+            )
+        }
+    };
+    ctx.say(response).await?;
     info!("Executed command `dice` successfully");
     Ok(())
 }
