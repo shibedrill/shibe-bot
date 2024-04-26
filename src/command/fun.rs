@@ -92,12 +92,11 @@ pub async fn bite(
     ctx: Context<'_>,
     #[description = "The target user"] target: serenity::User,
 ) -> Result<(), Error> {
-    ctx.say(format!(
-        "<@{}> has been bitten by <@{}>",
-        target.id,
-        ctx.author().id,
-    ))
-    .await?;
+    let message = match &target == ctx.author() {
+        true => format!("{} bit themselves (what a weirdo)", ctx.author()),
+        false => format!("{} was bitten by {}", target, ctx.author()),
+    };
+    ctx.say(message).await?;
     info!("Executed command `bite` successfully");
     Ok(())
 }
