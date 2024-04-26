@@ -102,7 +102,7 @@ pub async fn bite(
 }
 
 /// POST A DEER
-#[poise::command(slash_command)]
+#[poise::command(slash_command, global_cooldown = 10)]
 pub async fn deer(ctx: Context<'_>) -> Result<(), Error> {
     let subreddit = Subreddit::new("deer");
     let options = FeedOption::new().period(TimePeriod::ThisYear);
