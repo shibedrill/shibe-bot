@@ -51,7 +51,7 @@ pub async fn info(ctx: Context<'_>) -> Result<(), Error> {
 }
 
 /// Add channel to the registry
-#[poise::command(slash_command)]
+#[poise::command(slash_command, required_permissions = "MANAGE_CHANNELS")]
 pub async fn add_channel(
     ctx: Context<'_>,
     #[description = "Selected channel"] channel: serenity::Channel,
@@ -70,7 +70,7 @@ pub async fn add_channel(
 }
 
 /// Remove channel from the registry
-#[poise::command(slash_command)]
+#[poise::command(slash_command, required_permissions = "MANAGE_CHANNELS")]
 pub async fn remove_channel(
     ctx: Context<'_>,
     #[description = "Selected channel"] channel: serenity::Channel,
@@ -90,7 +90,7 @@ pub async fn remove_channel(
 }
 
 /// List channels held in the registry
-#[poise::command(slash_command)]
+#[poise::command(slash_command, required_permissions = "MANAGE_CHANNELS")]
 pub async fn list_channels(ctx: Context<'_>) -> Result<(), Error> {
     ctx.defer_ephemeral().await?;
     let config = &mut ctx.data().config_manager.lock().await;

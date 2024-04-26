@@ -22,3 +22,17 @@ pub async fn restart(ctx: Context<'_>) -> Result<(), Error> {
     info!("Executed command `restart` successfully");
     Ok(())
 }
+
+/// Say a specific message
+#[poise::command(slash_command, owners_only, hide_in_help)]
+pub async fn say(
+    ctx: Context<'_>,
+    #[description = "The message content to send"] what: String,
+    #[description = "Whether to make it ephemeral"] ephemeral: Option<bool>,
+) -> Result<(), Error> {
+    if ephemeral == Some(true) {
+        ctx.defer_ephemeral().await?;
+    }
+    ctx.say(what).await?;
+    Ok(())
+}

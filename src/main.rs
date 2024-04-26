@@ -88,6 +88,7 @@ async fn main() {
                 // Dev
                 shutdown(),
                 restart(),
+                say(),
                 // Fun
                 meow(),
                 whack(),

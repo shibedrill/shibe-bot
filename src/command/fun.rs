@@ -111,7 +111,8 @@ pub async fn deer(ctx: Context<'_>) -> Result<(), Error> {
         let mut rng = rand::thread_rng();
         hot.data.children.choose(&mut rng).unwrap()
     };
-    ctx.say(format!("https://reddit.com{}", &chosen_post.data.permalink)).await?;
+    ctx.say(format!("https://reddit.com{}", &chosen_post.data.permalink))
+        .await?;
     info!("Executed command `deer` successfully");
     Ok(())
 }
