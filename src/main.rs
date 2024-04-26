@@ -90,9 +90,10 @@ async fn main() {
                 restart(),
                 // Fun
                 meow(),
-                penis(),
+                whack(),
                 eightball(),
                 bite(),
+                deer(),
             ],
             initialize_owners: true,
             ..Default::default()

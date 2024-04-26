@@ -96,9 +96,9 @@ pub async fn list_channels(ctx: Context<'_>) -> Result<(), Error> {
     let config = &mut ctx.data().config_manager.lock().await;
     let mut channel_ids: Vec<u64> = vec![];
     config
-    .channels
-    .iter()
-    .for_each(|c| channel_ids.push(u64::from(c.id())));
+        .channels
+        .iter()
+        .for_each(|c| channel_ids.push(u64::from(c.id())));
     ctx.say(format!(
         "Current channel IDs in registry: \n{:#?}",
         channel_ids
