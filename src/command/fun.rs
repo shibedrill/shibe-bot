@@ -21,10 +21,13 @@ pub async fn meow(ctx: Context<'_>) -> Result<(), Error> {
         "mrrghh",
         "mrowwwwwwwwwwww",
         "FUCK",
+        "IM GONNA MROWWWWW!!11!11!",
+        "meow meow bitchass",
+        "mrrghh???",
     ];
     let response = {
         let mut rng = rand::thread_rng();
-        match rng.gen_bool(0.1) {
+        match rng.gen_bool(0.05) {
             true => "woof",
             // Will never return None. The source is staticaly defined.
             // We know it will always have items in it.
@@ -42,11 +45,15 @@ pub async fn whack(
     ctx: Context<'_>,
     #[description = "The target user"] target: serenity::User,
 ) -> Result<(), Error> {
-    ctx.say(format!(
-        "<@{}> has been whacked. they must whack another user to become un-whacked",
-        target.id
-    ))
-    .await?;
+    let response = match &target == ctx.author() {
+        true => "You can't whack yourself. idiot.".into(),
+        false => format!(
+            "{} was whacked by {}. they must whack another user to become unwhacked.",
+            target,
+            ctx.author()
+        ),
+    };
+    ctx.say(response).await?;
     info!("Executed command `whack` successfully");
     Ok(())
 }
