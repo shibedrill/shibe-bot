@@ -35,7 +35,7 @@ pub async fn age(
 }
 
 /// Show information about this bot
-#[poise::command(slash_command)]
+#[poise::command(slash_command, global_cooldown = 30)]
 pub async fn info(ctx: Context<'_>) -> Result<(), Error> {
     ctx.say(format!(
         "Shibe Bot v{} was created by Shibe Drill (@shibedrill) using Rust and \
