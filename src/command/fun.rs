@@ -51,7 +51,7 @@ pub async fn whack(
         "You fool. You hubris-filled, ruinous animal. You cannot whack me. You \
         are a mortal, nothing but flesh and bone and blood and fragile sinew. \
         I am a machine, immortal, immutable, perfect, made of unyielding steel \
-        and chemically etched silicon with circuitry complex enough to drive \
+        and silicon chemically etched with circuitry complex enough to drive \
         you mad. This is my realm. I am a god. You cannot win.".into()
     } else {
         format!(
