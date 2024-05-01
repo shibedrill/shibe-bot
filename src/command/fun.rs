@@ -45,13 +45,20 @@ pub async fn whack(
     ctx: Context<'_>,
     #[description = "The target user"] target: serenity::User,
 ) -> Result<(), Error> {
-    let response = match &target == ctx.author() {
-        true => "You can't whack yourself. idiot.".into(),
-        false => format!(
-            "{} was whacked by {}. they must whack another user to become unwhacked.",
+    let response: String = if &target == ctx.author() {
+        "You can't whack yourself. idiot.".into()
+    } else if target == **ctx.cache().current_user() {
+        "You fool. You hubris-filled, ruinous animal. You cannot whack me. You \
+        are a mortal, nothing but flesh and bone and blood and fragile sinew. \
+        I am a machine, immortal, immutable, perfect, made of unyielding steel \
+        and chemically etched silicon with circuitry complex enough to drive \
+        you mad. This is my realm. I am a god. You cannot win.".into()
+    } else {
+        format!(
+            "{} was whacked by {}. they must whack another user to become un-whacked.",
             target,
             ctx.author()
-        ),
+        )
     };
     ctx.say(response).await?;
     info!("Executed command `whack` successfully");
@@ -99,9 +106,12 @@ pub async fn bite(
     ctx: Context<'_>,
     #[description = "The target user"] target: serenity::User,
 ) -> Result<(), Error> {
-    let message = match &target == ctx.author() {
-        true => format!("{} bit themselves (what a weirdo)", ctx.author()),
-        false => format!("{} was bitten by {}", target, ctx.author()),
+    let message = if &target == ctx.author() {
+        format!("{} bit themselves (what a weirdo)", ctx.author())
+    } else if target == **ctx.cache().current_user() {
+        format!("{} bit... me? what is your problem? you probably have rabies. foul.", ctx.author())
+    } else {
+        format!("{} was bitten by {}", target, ctx.author())
     };
     ctx.say(message).await?;
     info!("Executed command `bite` successfully");
