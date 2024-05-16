@@ -125,7 +125,7 @@ async fn main() {
     let mut client = serenity::ClientBuilder::new(token, intents)
         .framework(framework)
         .await
-        .unwrap();
+        .expect("Unable to build client");
     info!("Built client successfully");
 
     // List the owner
@@ -135,14 +135,14 @@ async fn main() {
             .http
             .get_current_application_info()
             .await
-            .unwrap()
+            .expect("Could not get current application info")
             .owner
-            .unwrap()
+            .expect("Could not get owner info")
             .name
     );
 
     // Finally start everything. Nothing after this should be reachable normally.
     info!("Starting client");
-    client.start().await.unwrap();
+    client.start().await.expect("Could not start client");
     info!("All tasks finished, shutting down");
 }

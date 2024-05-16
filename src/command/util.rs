@@ -39,8 +39,8 @@ pub async fn age(
 pub async fn info(ctx: Context<'_>) -> Result<(), Error> {
     ctx.say(format!(
         "Shibe Bot v{} was created by Shibe Drill (@shibedrill) using Rust and \
-        Poise.\nVisit her website: <https://riverdev.carrd.co>\nCheck out her \
-        Github: <https://github.com/shibedrill/shibe-bot>\n\
+        Poise.\nWebsite: <https://riverdev.carrd.co>\n\
+        Source code: <https://github.com/shibedrill/shibe-bot>\n\
         Poise: <https://docs.rs/poise/latest/poise/>\n\
         Rust: <https://www.rust-lang.org/>",
         env!("CARGO_PKG_VERSION")
@@ -59,7 +59,7 @@ pub async fn add_channel(
     let config = &mut ctx.data().config_manager.lock().await;
     let channel_id = { u64::from(channel.id()) };
     config.channels.push(channel);
-    config.store().unwrap();
+    config.store().expect("Unable to store config");
     ctx.say(format!(
         "Successfully added <#{}> to the channel registry.",
         channel_id
@@ -79,7 +79,7 @@ pub async fn remove_channel(
     let config = &mut ctx.data().config_manager.lock().await;
     let channel_id = { u64::from(channel.id()) };
     config.channels.retain(|c| c.id() != channel.id());
-    config.store().unwrap();
+    config.store().expect("Unable to store config");
     ctx.say(format!(
         "Successfully removed <#{}> from the channel registry.",
         channel_id

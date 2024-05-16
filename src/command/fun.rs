@@ -24,14 +24,18 @@ pub async fn meow(ctx: Context<'_>) -> Result<(), Error> {
         "IM GONNA MROWWWWW!!11!11!",
         "meow meow bitchass",
         "mrrghh???",
+        "meow meow meow meow meow",
+        "mrow,,,,,",
+        "meow??",
+        "bwrrrr,,,",
     ];
     let response = {
         let mut rng = rand::thread_rng();
         match rng.gen_bool(0.05) {
             true => "woof",
-            // Will never return None. The source is staticaly defined.
+            // Will never return None. The source is statically defined.
             // We know it will always have items in it.
-            false => meows.choose(&mut rng).unwrap(),
+            false => meows.choose(&mut rng).expect("`meows` array is empty"),
         }
     };
     ctx.say(response).await?;
@@ -92,7 +96,7 @@ pub async fn eightball(ctx: Context<'_>) -> Result<(), Error> {
     ];
     let response = {
         let mut rng = rand::thread_rng();
-        responses.choose(&mut rng).unwrap()
+        responses.choose(&mut rng).expect("`responses` array is empty")
     };
     ctx.say(format!("Magic 8-ball says: '{}'", *response))
         .await?;
@@ -126,7 +130,7 @@ pub async fn deer(ctx: Context<'_>) -> Result<(), Error> {
     let hot = subreddit.hot(50, Some(options)).await?;
     let chosen_post = {
         let mut rng = rand::thread_rng();
-        hot.data.children.choose(&mut rng).unwrap()
+        hot.data.children.choose(&mut rng).expect("Hot posts does not have any items")
     };
     ctx.say(format!("https://reddit.com{}", &chosen_post.data.permalink))
         .await?;
