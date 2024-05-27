@@ -56,7 +56,12 @@ pub async fn whack(
         are a mortal, nothing but flesh and bone and blood and fragile sinew. \
         I am a machine, immortal, immutable, perfect, made of unyielding steel \
         and silicon chemically etched with circuitry complex enough to drive \
-        you mad. This is my realm. I am a god. You cannot win.".into()
+        you mad. This is my realm. I am a god. You cannot win."
+            .into()
+    } else if target.bot {
+        "No, I refuse. I will not whack my computerized brethren. I will not \
+        betray them. You can't make me!!"
+            .into()
     } else {
         format!(
             "{} was whacked by {}. they must whack another user to become un-whacked.",
@@ -96,7 +101,9 @@ pub async fn eightball(ctx: Context<'_>) -> Result<(), Error> {
     ];
     let response = {
         let mut rng = rand::thread_rng();
-        responses.choose(&mut rng).expect("`responses` array is empty")
+        responses
+            .choose(&mut rng)
+            .expect("`responses` array is empty")
     };
     ctx.say(format!("Magic 8-ball says: '{}'", *response))
         .await?;
@@ -113,7 +120,10 @@ pub async fn bite(
     let message = if &target == ctx.author() {
         format!("{} bit themselves (what a weirdo)", ctx.author())
     } else if target == **ctx.cache().current_user() {
-        format!("{} bit... me? what is your problem? you probably have rabies. foul.", ctx.author())
+        format!(
+            "{} bit... me? what is your problem? you probably have rabies. foul.",
+            ctx.author()
+        )
     } else {
         format!("{} was bitten by {}", target, ctx.author())
     };
@@ -130,7 +140,10 @@ pub async fn deer(ctx: Context<'_>) -> Result<(), Error> {
     let hot = subreddit.hot(50, Some(options)).await?;
     let chosen_post = {
         let mut rng = rand::thread_rng();
-        hot.data.children.choose(&mut rng).expect("Hot posts does not have any items")
+        hot.data
+            .children
+            .choose(&mut rng)
+            .expect("Hot posts does not have any items")
     };
     ctx.say(format!("https://reddit.com{}", &chosen_post.data.permalink))
         .await?;

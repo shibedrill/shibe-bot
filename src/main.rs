@@ -1,4 +1,7 @@
+#![forbid(unsafe_code)]
+
 // Tokio async crap
+use poise::serenity_prelude::FullEvent;
 use std::sync::Arc;
 use tokio::sync::Mutex;
 
@@ -7,7 +10,6 @@ use dotenv::dotenv;
 
 // Poise and Serenity - Framework and API prelude
 use poise::serenity_prelude as serenity;
-use serenity::Channel;
 
 // Logging stuff
 extern crate pretty_env_logger;
@@ -44,11 +46,34 @@ type Context<'a> = poise::Context<'a, Data, Error>;
 // The structure making up the configuration
 #[derive(Debug, Serialize, Deserialize, Default)]
 struct Settings {
-    channels: Vec<Channel>,
+    channels: Vec<u64>,
 }
 
 // Path at which our settings are stored (currently PWD)
 const SETTINGS_PATH: &str = "settings.json";
+
+async fn event_handler(
+    _ctx: &serenity::Context,
+    event: &serenity::FullEvent,
+    _framework: poise::FrameworkContext<'_, Data, Error>,
+    data: &Data,
+) -> Result<(), Error> {
+    match event {
+        FullEvent::ChannelDelete {
+            channel,
+            messages: _,
+        } => {
+            info!("Handling event type: ChannelDelete({})", channel.id);
+            data.config_manager
+                .lock()
+                .await
+                .channels
+                .retain(|item| *item != u64::from(channel.id));
+        }
+        _ => (),
+    }
+    Ok(())
+}
 
 // Main function for setup
 #[tokio::main]
@@ -97,6 +122,9 @@ async fn main() {
                 deer(),
             ],
             initialize_owners: true,
+            event_handler: |ctx, event, framework, data| {
+                Box::pin(event_handler(ctx, event, framework, data))
+            },
             ..Default::default()
         })
         .setup(|ctx, _ready, framework| {
