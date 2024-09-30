@@ -154,7 +154,7 @@ pub async fn deer(ctx: Context<'_>) -> Result<(), Error> {
                 error!("Executing command `deer` failed: {}", e)
             })?
     };
-    ctx.say(format!("https://reddit.com{}", &chosen_post.data.permalink))
+    ctx.say(format!("https://vxreddit.com{}", &chosen_post.data.permalink))
         .await?;
     info!("Executed command `deer` successfully");
     Ok(())
