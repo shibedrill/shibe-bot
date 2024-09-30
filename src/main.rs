@@ -58,19 +58,16 @@ async fn event_handler(
     _framework: poise::FrameworkContext<'_, Data, Error>,
     data: &Data,
 ) -> Result<(), Error> {
-    match event {
-        FullEvent::ChannelDelete {
+    if let FullEvent::ChannelDelete {
             channel,
             messages: _,
-        } => {
-            info!("Handling event type: ChannelDelete({})", channel.id);
-            data.config_manager
-                .lock()
-                .await
-                .channels
-                .retain(|item| *item != u64::from(channel.id));
-        }
-        _ => (),
+        } = event {
+        info!("Handling event type: ChannelDelete({})", channel.id);
+        data.config_manager
+            .lock()
+            .await
+            .channels
+            .retain(|item| *item != u64::from(channel.id));
     }
     Ok(())
 }

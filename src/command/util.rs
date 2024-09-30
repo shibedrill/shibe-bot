@@ -4,6 +4,8 @@ use rand::Rng;
 use crate::Context;
 use crate::Error;
 
+use build_time::build_time_local;
+
 const INVITE_LINK: &str = "https://discord.com/oauth2/authorize?client_id=1030701552941412382&permissions=116736&response_type=code&redirect_uri=https%3A%2F%2Fdiscordapp.com%2Foauth2%2Fauthorize%3F%26client_id%3D1030701552941412382%26scope%3Dbot&scope=guilds+bot";
 
 /// Add this bot to your server
@@ -38,12 +40,17 @@ pub async fn age(
 #[poise::command(slash_command, global_cooldown = 30)]
 pub async fn info(ctx: Context<'_>) -> Result<(), Error> {
     ctx.say(format!(
-        "Shibe Bot v{} was created by Shibe Drill (@shibedrill) using Rust and \
-        Poise.\nWebsite: <https://riverdev.carrd.co>\n\
+        "Shibe Bot v{} was created by Shibe Drill (@shibedrill) \
+        using Rust and Poise.\n\
+        rustc version: {}\n\
+        Build timestamp: {}\n\
+        Website: <https://riverdev.carrd.co>\n\
         Source code: <https://github.com/shibedrill/shibe-bot>\n\
         Poise: <https://docs.rs/poise/latest/poise/>\n\
         Rust: <https://www.rust-lang.org/>",
-        env!("CARGO_PKG_VERSION")
+        env!("CARGO_PKG_VERSION"), 
+        rustc_version_runtime::version(),
+        build_time_local!()
     ))
     .await?;
     info!("Executed command `info` successfully");
