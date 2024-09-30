@@ -35,7 +35,7 @@ pub async fn meow(ctx: Context<'_>) -> Result<(), Error> {
             true => "woof",
             // Will never return None. The source is statically defined.
             // We know it will always have items in it.
-            false => meows.choose(&mut rng).expect("`meows` array is empty"),
+            false => meows.choose(&mut rng).ok_or("`meows` array is empty")?,
         }
     };
     ctx.say(response).await?;
@@ -49,21 +49,19 @@ pub async fn whack(
     ctx: Context<'_>,
     #[description = "The target user"] target: serenity::User,
 ) -> Result<(), Error> {
-    let response: String = if &target == ctx.author() {
-        "You can't whack yourself. idiot.".into()
+    let response: &str = if &target == ctx.author() {
+        "You can't whack yourself. idiot."
     } else if target == **ctx.cache().current_user() {
         "You fool. You hubris-filled, ruinous animal. You cannot whack me. You \
         are a mortal, nothing but flesh and bone and blood and fragile sinew. \
         I am a machine, immortal, immutable, perfect, made of unyielding steel \
         and silicon chemically etched with circuitry complex enough to drive \
         you mad. This is my realm. I am a god. You cannot win."
-            .into()
     } else if target.bot {
         "No, I refuse. I will not whack my computerized brethren. I will not \
         betray them. You can't make me!!"
-            .into()
     } else {
-        format!(
+        &format!(
             "{} was whacked by {}. they must whack another user to become un-whacked.",
             target,
             ctx.author()
@@ -143,7 +141,7 @@ pub async fn deer(ctx: Context<'_>) -> Result<(), Error> {
         hot.data
             .children
             .choose(&mut rng)
-            .expect("Hot posts does not have any items")
+            .ok_or("Unable to get any hot posts.")?
     };
     ctx.say(format!("https://reddit.com{}", &chosen_post.data.permalink))
         .await?;

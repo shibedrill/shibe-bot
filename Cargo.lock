@@ -1522,7 +1522,7 @@ dependencies = [
 
 [[package]]
 name = "shibe-bot"
-version = "0.2.2"
+version = "0.2.3"
 dependencies = [
  "build-time",
  "dotenv",
