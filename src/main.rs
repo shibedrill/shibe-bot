@@ -6,7 +6,7 @@ use std::sync::Arc;
 use tokio::sync::Mutex;
 
 // For secure credential handling
-use dotenv::dotenv;
+use dotenvy::dotenv;
 
 // Poise and Serenity - Framework and API prelude
 use poise::serenity_prelude as serenity;
