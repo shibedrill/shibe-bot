@@ -101,7 +101,10 @@ pub async fn eightball(ctx: Context<'_>) -> Result<(), Error> {
         let mut rng = rand::thread_rng();
         responses
             .choose(&mut rng)
-            .expect("`responses` array is empty")
+            .ok_or("Response array is empty".to_string())
+            .inspect_err(|e| {
+                error!("Executing command `eightball` failed: {}", e)
+            })?
     };
     ctx.say(format!("Magic 8-ball says: '{}'", *response))
         .await?;
@@ -141,7 +144,10 @@ pub async fn deer(ctx: Context<'_>) -> Result<(), Error> {
         hot.data
             .children
             .choose(&mut rng)
-            .ok_or("Unable to get any hot posts.")?
+            .ok_or("Unable to get any hot posts")
+            .inspect_err(|e| {
+                error!("Executing command `deer` failed: {}", e)
+            })?
     };
     ctx.say(format!("https://reddit.com{}", &chosen_post.data.permalink))
         .await?;

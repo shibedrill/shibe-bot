@@ -59,9 +59,10 @@ async fn event_handler(
     data: &Data,
 ) -> Result<(), Error> {
     if let FullEvent::ChannelDelete {
-            channel,
-            messages: _,
-        } = event {
+        channel,
+        messages: _,
+    } = event
+    {
         info!("Handling event type: ChannelDelete({})", channel.id);
         data.config_manager
             .lock()
@@ -150,7 +151,10 @@ async fn main() {
     let mut client = serenity::ClientBuilder::new(token, intents)
         .framework(framework)
         .await
-        .expect("Unable to build client");
+        .unwrap_or_else(|e| {
+            error!("Building client failed: {}", e);
+            std::process::exit(-1);
+        });
     info!("Built client successfully");
 
     // List the owner
@@ -160,14 +164,23 @@ async fn main() {
             .http
             .get_current_application_info()
             .await
-            .expect("Could not get current application info")
+            .unwrap_or_else(|e| {
+                error!("Getting application info failed: {}", e);
+                std::process::exit(-1);
+            })
             .owner
-            .expect("Could not get owner info")
+            .unwrap_or_else(|| {
+                error!("Getting owner info failed: `.owner` is `None`");
+                std::process::exit(-1);
+            })
             .name
     );
 
     // Finally start everything. Nothing after this should be reachable normally.
     info!("Starting client");
-    client.start().await.expect("Could not start client");
+    client.start().await.unwrap_or_else(|e| {
+        error!("Starting client failed: {}", e);
+        std::process::exit(-1);
+    });
     info!("All tasks finished, shutting down");
 }

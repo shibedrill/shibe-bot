@@ -48,7 +48,7 @@ pub async fn info(ctx: Context<'_>) -> Result<(), Error> {
         Source code: <https://github.com/shibedrill/shibe-bot>\n\
         Poise: <https://docs.rs/poise/latest/poise/>\n\
         Rust: <https://www.rust-lang.org/>",
-        env!("CARGO_PKG_VERSION"), 
+        env!("CARGO_PKG_VERSION"),
         rustc_version_runtime::version(),
         build_time_local!()
     ))
