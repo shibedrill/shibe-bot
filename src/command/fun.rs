@@ -35,7 +35,12 @@ pub async fn meow(ctx: Context<'_>) -> Result<(), Error> {
             true => "woof",
             // Will never return None. The source is statically defined.
             // We know it will always have items in it.
-            false => meows.choose(&mut rng).ok_or("`meows` array is empty")?,
+            false => meows
+                .choose(&mut rng)
+                .ok_or("`meows` array is empty")
+                .inspect_err(|e| {
+                    error!("Executing command `meow` failed: {}", e);
+                })?
         }
     };
     ctx.say(response).await?;

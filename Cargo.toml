@@ -1,6 +1,6 @@
 [package]
 name = "shibe-bot"
-version = "0.2.4"
+version = "0.2.5"
 edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
@@ -14,6 +14,6 @@ tokio = { version = "1.0", features = ["macros", "rt-multi-thread"] }
 rand = "0.8.5"
 serde = { version = "1.0.198", features = ["serde_derive"] }
 serde_json = "1.0.116"
-roux = "2.2.12"
+roux = "2.2.13"
 rustc_version_runtime = "0.3.0"
 build-time = "0.1.3"
