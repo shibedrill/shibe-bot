@@ -12,7 +12,7 @@ poise = "0.6.1"
 pretty_env_logger = "0.5.0"
 tokio = { version = "1.40", features = ["macros", "rt-multi-thread"] }
 rand = "0.8.5"
-serde = { version = "1.0.198", features = ["serde_derive"] }
+serde = { version = "1.0.210", features = ["serde_derive"] }
 serde_json = "1.0.128"
 roux = "2.2.13"
 rustc_version_runtime = "0.3.0"
