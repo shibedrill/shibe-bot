@@ -39,7 +39,7 @@ impl<T: Default + Serialize + for<'a> Deserialize<'a>> Manager<T> {
     pub fn store(&self) -> Result<(), std::io::Error> {
         let data = serde_json::to_string_pretty(&self.internal)?;
         let mut file = std::fs::File::create(&self.path)?;
-        let _ = file.write(data.as_bytes());
+        file.write_all(data.as_bytes())?;
         Ok(())
     }
     /// Create a new manager, passing in the path, and a structure to manage.

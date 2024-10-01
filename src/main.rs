@@ -76,23 +76,33 @@ async fn event_handler(
 // Main function for setup
 #[tokio::main]
 async fn main() {
-    // Get secure env vars from .env file
-    dotenv().ok();
-    // Get token from environment
-    let token = std::env::var("TOKEN").expect("Getting TOKEN from environment failed");
-    // Set up some non privileged intents
-    let intents = serenity::GatewayIntents::non_privileged();
-
     // Initialize logging
     pretty_env_logger::init();
+    info!("Initialized logger successfully");
+    // Get secure env vars from .env file
+    match dotenv() {
+        Ok(_) => info!("Loaded env vars from .env successfully"),
+        Err(e) => error!("Failed to get vars from .env: {}", e),
+    }
+
+    // Get token from environment
+    let token = std::env::var("TOKEN")
+        .inspect_err(|e| {
+            error!("Failed to get TOKEN from environment: {}", e);
+        })
+        .expect("Failed to get TOKEN from environment");
+    info!("Got TOKEN successfully");
+    // Set up some non privileged intents
+    let intents = serenity::GatewayIntents::non_privileged();
 
     // Configure persistent options
     let config_manager: Arc<Mutex<Manager<Settings>>> = Arc::new(Mutex::new(
         Manager::load(SETTINGS_PATH).unwrap_or(Manager::manage(SETTINGS_PATH, Settings::default())),
     ));
-    let _ = config_manager.lock().await.store().inspect_err(|e| {
-        error!("Failed to store config: {}", e);
-    });
+    match config_manager.lock().await.store() {
+        Ok(_) => info!("Stored config successfully"),
+        Err(e) => error!("Failed to store config: {}", e),
+    };
 
     // Set up framework
     let framework = poise::Framework::builder()
