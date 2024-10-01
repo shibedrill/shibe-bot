@@ -4,10 +4,10 @@ use crate::Error;
 use poise::serenity_prelude as serenity;
 
 use rand::prelude::SliceRandom;
-use rand::*;
+use rand::Rng;
 
-use roux::util::*;
-use roux::*;
+use roux::util::{FeedOption, TimePeriod};
+use roux::Subreddit;
 
 /// mrow
 #[poise::command(slash_command)]
@@ -31,11 +31,12 @@ pub async fn meow(ctx: Context<'_>) -> Result<(), Error> {
     ];
     let response = {
         let mut rng = rand::thread_rng();
-        match rng.gen_bool(0.05) {
-            true => "woof",
+        if rng.gen_bool(0.05) {
+            "woof"
             // Will never return None. The source is statically defined.
             // We know it will always have items in it.
-            false => meows
+        } else { 
+            meows
                 .choose(&mut rng)
                 .ok_or("`meows` array is empty")
                 .inspect_err(|e| {
@@ -108,7 +109,7 @@ pub async fn eightball(ctx: Context<'_>) -> Result<(), Error> {
             .choose(&mut rng)
             .ok_or("Response array is empty".to_string())
             .inspect_err(|e| {
-                error!("Executing command `eightball` failed: {}", e)
+                error!("Executing command `eightball` failed: {}", e);
             })?
     };
     ctx.say(format!("Magic 8-ball says: '{}'", *response))
@@ -151,7 +152,7 @@ pub async fn deer(ctx: Context<'_>) -> Result<(), Error> {
             .choose(&mut rng)
             .ok_or("Unable to get any hot posts")
             .inspect_err(|e| {
-                error!("Executing command `deer` failed: {}", e)
+                error!("Executing command `deer` failed: {}", e);
             })?
     };
     ctx.say(format!("https://vxreddit.com{}", &chosen_post.data.permalink))

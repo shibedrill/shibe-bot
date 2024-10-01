@@ -17,9 +17,9 @@ extern crate pretty_env_logger;
 extern crate log;
 
 // For managing config storage
-use serde::*;
+use serde::{Deserialize, Serialize};
 mod settings;
-use crate::settings::*;
+use crate::settings::Manager;
 
 // Bot commands
 mod command;
@@ -34,7 +34,7 @@ use crate::command::{
 
 // Data passed to every command (shared state)
 struct Data {
-    config_manager: Arc<Mutex<SettingsManager<Settings>>>,
+    config_manager: Arc<Mutex<Manager<Settings>>>,
 }
 
 // Errors returnable by a command
@@ -87,9 +87,9 @@ async fn main() {
     pretty_env_logger::init();
 
     // Configure persistent options
-    let config_manager: Arc<Mutex<SettingsManager<Settings>>> = Arc::new(Mutex::new(
-        SettingsManager::load(SETTINGS_PATH)
-            .unwrap_or(SettingsManager::manage(SETTINGS_PATH, Settings::default())),
+    let config_manager: Arc<Mutex<Manager<Settings>>> = Arc::new(Mutex::new(
+        Manager::load(SETTINGS_PATH)
+            .unwrap_or(Manager::manage(SETTINGS_PATH, Settings::default())),
     ));
     config_manager.lock().await.store();
 

@@ -1,6 +1,9 @@
 [package]
 name = "shibe-bot"
-version = "0.3.0"
+description = "A Discord bot written in Rust, using Poise."
+license = "MIT"
+readme = "README.md"
+version = "0.3.1"
 edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html

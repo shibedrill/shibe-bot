@@ -13,10 +13,9 @@ const INVITE_LINK: &str = "https://discord.com/oauth2/authorize?client_id=103070
 pub async fn invite(ctx: Context<'_>) -> Result<(), Error> {
     ctx.defer_ephemeral().await?;
     ctx.say(format!(
-        "To add me to your server, click [this link]({}), or open it in the \
+        "To add me to your server, click [this link]({INVITE_LINK}), or open it in the \
         browser and enable all the requested permissions. Then select your \
         server to add it.",
-        INVITE_LINK
     ))
     .await?;
     info!("Executed command `invite` successfully");
@@ -69,14 +68,11 @@ pub async fn add_channel(
     match config.channels.iter().find(|item| **item == channel_id) {
         None => {
             config.channels.push(channel_id);
-            ctx.say(format!(
-                "Successfully added <#{}> to the channel registry.",
-                channel_id
-            ))
+            ctx.say(format!("Successfully added <#{channel_id}> to the channel registry."))
             .await?;
         }
         Some(_) => {
-            ctx.say(format!("Channel <#{}> is already in registry.", channel_id))
+            ctx.say(format!("Channel <#{channel_id}> is already in registry."))
                 .await?;
         }
     }
@@ -96,18 +92,12 @@ pub async fn remove_channel(
     let channel_id = { u64::from(channel.id()) };
     match config.channels.iter().position(|item| *item == channel_id) {
         None => {
-            ctx.say(format!(
-                "Channel <#{}> was not in the channel registry.",
-                channel_id
-            ))
+            ctx.say(format!("Channel <#{channel_id}> was not in the channel registry."))
             .await?;
         }
         Some(found) => {
             config.channels.remove(found);
-            ctx.say(format!(
-                "Successfully removed <#{}> from the channel registry.",
-                channel_id
-            ))
+            ctx.say(format!("Successfully removed <#{channel_id}> from the channel registry."))
             .await?;
         }
     }
@@ -155,12 +145,7 @@ pub async fn dice(
                 }
             )
         }
-        _ => {
-            format!(
-                "Rolled a random number from 1 to {}, got: {}",
-                sides, answer
-            )
-        }
+        _ => format!("Rolled a random number from 1 to {sides}, got: {answer}")
     };
     ctx.say(response).await?;
     info!("Executed command `dice` successfully");

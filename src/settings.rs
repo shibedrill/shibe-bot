@@ -5,12 +5,12 @@ use serde::de::Deserialize;
 use serde::ser::Serialize;
 
 /// A utility structure to manage a settings structure.
-pub struct SettingsManager<T: Default + Serialize + for<'a> Deserialize<'a>> {
+pub struct Manager<T: Default + Serialize + for<'a> Deserialize<'a>> {
     internal: T,
     path: String,
 }
 
-impl<T: Default + Serialize + for<'a> Deserialize<'a>> SettingsManager<T> {
+impl<T: Default + Serialize + for<'a> Deserialize<'a>> Manager<T> {
     /// Instantiate new self if the path contains a valid serialization of
     /// the settings structure.
     pub fn load(path: &str) -> Option<Self> {
@@ -52,7 +52,7 @@ impl<T: Default + Serialize + for<'a> Deserialize<'a>> SettingsManager<T> {
     }
 }
 
-impl<T: Default + Serialize + for<'a> Deserialize<'a>> Deref for SettingsManager<T> {
+impl<T: Default + Serialize + for<'a> Deserialize<'a>> Deref for Manager<T> {
     type Target = T;
 
     fn deref(&self) -> &Self::Target {
@@ -60,7 +60,7 @@ impl<T: Default + Serialize + for<'a> Deserialize<'a>> Deref for SettingsManager
     }
 }
 
-impl<T: Default + Serialize + for<'a> Deserialize<'a>> DerefMut for SettingsManager<T> {
+impl<T: Default + Serialize + for<'a> Deserialize<'a>> DerefMut for Manager<T> {
     fn deref_mut(&mut self) -> &mut Self::Target {
         &mut self.internal
     }
