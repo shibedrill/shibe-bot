@@ -3,7 +3,7 @@ use build_time::build_time_local;
 use crate::Context;
 use crate::Error;
 
-/// Update the bot from anywhere, using systemd service
+/// Update the bot remotely (Requires updater systemd service)
 #[poise::command(slash_command, owners_only, hide_in_help)]
 pub async fn update(ctx: Context<'_>) -> Result<(), Error> {
     let command_result = std::process::Command::new("systemd")

@@ -123,6 +123,7 @@ async fn main() {
                 shutdown(),
                 restart(),
                 say(),
+                update(),
                 // Fun
                 meow(),
                 whack(),
