@@ -68,7 +68,9 @@ pub async fn add_channel(
     match config.channels.iter().find(|item| **item == channel_id) {
         None => {
             config.channels.push(channel_id);
-            ctx.say(format!("Successfully added <#{channel_id}> to the channel registry."))
+            ctx.say(format!(
+                "Successfully added <#{channel_id}> to the channel registry."
+            ))
             .await?;
         }
         Some(_) => {
@@ -92,12 +94,16 @@ pub async fn remove_channel(
     let channel_id = { u64::from(channel.id()) };
     match config.channels.iter().position(|item| *item == channel_id) {
         None => {
-            ctx.say(format!("Channel <#{channel_id}> was not in the channel registry."))
+            ctx.say(format!(
+                "Channel <#{channel_id}> was not in the channel registry."
+            ))
             .await?;
         }
         Some(found) => {
             config.channels.remove(found);
-            ctx.say(format!("Successfully removed <#{channel_id}> from the channel registry."))
+            ctx.say(format!(
+                "Successfully removed <#{channel_id}> from the channel registry."
+            ))
             .await?;
         }
     }
@@ -145,7 +151,7 @@ pub async fn dice(
                 }
             )
         }
-        _ => format!("Rolled a random number from 1 to {sides}, got: {answer}")
+        _ => format!("Rolled a random number from 1 to {sides}, got: {answer}"),
     };
     ctx.say(response).await?;
     info!("Executed command `dice` successfully");

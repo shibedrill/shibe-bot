@@ -35,7 +35,7 @@ pub async fn meow(ctx: Context<'_>) -> Result<(), Error> {
             "woof"
             // Will never return None. The source is statically defined.
             // We know it will always have items in it.
-        } else { 
+        } else {
             meows
                 .choose(&mut rng)
                 .ok_or("`meows` array is empty")
@@ -155,8 +155,11 @@ pub async fn deer(ctx: Context<'_>) -> Result<(), Error> {
                 error!("Executing command `deer` failed: {}", e);
             })?
     };
-    ctx.say(format!("https://vxreddit.com{}", &chosen_post.data.permalink))
-        .await?;
+    ctx.say(format!(
+        "https://vxreddit.com{}",
+        &chosen_post.data.permalink
+    ))
+    .await?;
     info!("Executed command `deer` successfully");
     Ok(())
 }

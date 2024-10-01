@@ -13,12 +13,12 @@ pub struct Manager<T: Default + Serialize + for<'a> Deserialize<'a>> {
 impl<T: Default + Serialize + for<'a> Deserialize<'a>> Manager<T> {
     /// Instantiate new self if the path contains a valid serialization of
     /// the settings structure.
-    pub fn load(path: &str) -> Option<Self> {
-        let mut file = std::fs::File::open(path).ok()?;
+    pub fn load(path: &str) -> Result<Self, std::io::Error> {
+        let mut file = std::fs::File::open(path)?;
         let mut data = String::new();
-        file.read_to_string(&mut data).ok()?;
-        let settings = serde_json::from_str(&data).ok()?;
-        Some(Self {
+        file.read_to_string(&mut data)?;
+        let settings = serde_json::from_str(&data)?;
+        Ok(Self {
             internal: settings,
             path: String::from(path),
         })
@@ -27,20 +27,20 @@ impl<T: Default + Serialize + for<'a> Deserialize<'a>> Manager<T> {
     /// disk but not in memory. Because this is a stupid method, it will most
     /// likely go unused by most.
     #[allow(dead_code)]
-    pub fn update(&mut self) -> Option<()> {
-        let mut file = std::fs::File::open(self.path.clone()).ok()?;
+    pub fn update(&mut self) -> Result<(), std::io::Error> {
+        let mut file = std::fs::File::open(self.path.clone())?;
         let mut data = String::new();
-        file.read_to_string(&mut data).ok()?;
-        self.internal = serde_json::from_str(&data).ok()?;
-        Some(())
+        file.read_to_string(&mut data)?;
+        self.internal = serde_json::from_str(&data)?;
+        Ok(())
     }
     /// Serialize settings structure to the stored path. Returns None if
     /// unsuccessful.
-    pub fn store(&self) -> Option<()> {
-        let data = serde_json::to_string_pretty(&self.internal).ok()?;
-        let mut file = std::fs::File::create(&self.path).ok()?;
+    pub fn store(&self) -> Result<(), std::io::Error> {
+        let data = serde_json::to_string_pretty(&self.internal)?;
+        let mut file = std::fs::File::create(&self.path)?;
         let _ = file.write(data.as_bytes());
-        Some(())
+        Ok(())
     }
     /// Create a new manager, passing in the path, and a structure to manage.
     /// We cannot initialize a settings manager without fully initialized settings.

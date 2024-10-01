@@ -88,10 +88,11 @@ async fn main() {
 
     // Configure persistent options
     let config_manager: Arc<Mutex<Manager<Settings>>> = Arc::new(Mutex::new(
-        Manager::load(SETTINGS_PATH)
-            .unwrap_or(Manager::manage(SETTINGS_PATH, Settings::default())),
+        Manager::load(SETTINGS_PATH).unwrap_or(Manager::manage(SETTINGS_PATH, Settings::default())),
     ));
-    config_manager.lock().await.store();
+    let _ = config_manager.lock().await.store().inspect_err(|e| {
+        error!("Failed to store config: {}", e);
+    });
 
     // Set up framework
     let framework = poise::Framework::builder()
