@@ -6,7 +6,7 @@ use crate::Error;
 /// Update the bot remotely (Requires updater systemd service)
 #[poise::command(slash_command, owners_only, hide_in_help)]
 pub async fn update(ctx: Context<'_>) -> Result<(), Error> {
-    let command_result = std::process::Command::new("systemd")
+    let command_result = std::process::Command::new("systemctl")
         .arg("--user")
         .arg("restart")
         .arg("shibe-bot-update.service")
