@@ -1,6 +1,7 @@
 use crate::Context;
 use crate::Error;
 
+/// Print version and build information
 #[poise::command(slash_command)]
 pub async fn version(ctx: Context<'_>) -> Result<(), Error> {
     ctx.say(format!(
