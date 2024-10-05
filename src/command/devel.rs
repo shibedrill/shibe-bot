@@ -1,7 +1,24 @@
-use build_time::build_time_local;
 
 use crate::Context;
 use crate::Error;
+
+#[poise::command(slash_command)]
+pub async fn version(ctx: Context<'_>) -> Result<(), Error> {
+    ctx.say(format!(
+        "Bot version: {}\n\
+        Build:\n\
+        \tBuild date: {}\n\
+        \tBuild timestamp: {}\n\
+        \tTarget triple: {}\n\
+        \trustc version: {}\n",
+        env!("CARGO_PKG_VERSION"),
+        env!("VERGEN_BUILD_DATE"),
+        env!("VERGEN_BUILD_TIMESTAMP"),
+        env!("VERGEN_CARGO_TARGET_TRIPLE"),
+        env!("VERGEN_RUSTC_SEMVER"),
+    )).await?;
+    Ok(())
+}
 
 /// Update the bot remotely (Requires updater systemd service)
 #[poise::command(slash_command, owners_only, hide_in_help)]
@@ -19,7 +36,7 @@ pub async fn update(ctx: Context<'_>) -> Result<(), Error> {
             Current version: {}\n\
             Timestamp of last build: {}",
                 env!("CARGO_PKG_VERSION"),
-                build_time_local!()
+                env!("VERGEN_BUILD_TIMESTAMP")
             ))
             .await?;
             info!("Initialized restart service successfully");

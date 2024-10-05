@@ -4,8 +4,6 @@ use rand::Rng;
 use crate::Context;
 use crate::Error;
 
-use build_time::build_time_local;
-
 const INVITE_LINK: &str = "https://discord.com/oauth2/authorize?client_id=1030701552941412382&permissions=116736&response_type=code&redirect_uri=https%3A%2F%2Fdiscordapp.com%2Foauth2%2Fauthorize%3F%26client_id%3D1030701552941412382%26scope%3Dbot&scope=guilds+bot";
 
 /// Add this bot to your server
@@ -48,81 +46,11 @@ pub async fn info(ctx: Context<'_>) -> Result<(), Error> {
         Poise: <https://docs.rs/poise/latest/poise/>\n\
         Rust: <https://www.rust-lang.org/>",
         env!("CARGO_PKG_VERSION"),
-        rustc_version_runtime::version(),
-        build_time_local!()
+        env!("VERGEN_RUSTC_SEMVER"),
+        env!("VERGEN_BUILD_TIMESTAMP"),
     ))
     .await?;
     info!("Executed command `info` successfully");
-    Ok(())
-}
-
-/// Add channel to the registry
-#[poise::command(slash_command, required_permissions = "MANAGE_CHANNELS")]
-pub async fn add_channel(
-    ctx: Context<'_>,
-    #[description = "Selected channel"] channel: serenity::Channel,
-) -> Result<(), Error> {
-    ctx.defer_ephemeral().await?;
-    let config = &mut ctx.data().config_manager.lock().await;
-    let channel_id = { u64::from(channel.id()) };
-    match config.channels.iter().find(|item| **item == channel_id) {
-        None => {
-            config.channels.push(channel_id);
-            ctx.say(format!(
-                "Successfully added <#{channel_id}> to the channel registry."
-            ))
-            .await?;
-        }
-        Some(_) => {
-            ctx.say(format!("Channel <#{channel_id}> is already in registry."))
-                .await?;
-        }
-    }
-    config.store().expect("Unable to store config");
-    info!("Executed command `add_channel` successfully");
-    Ok(())
-}
-
-/// Remove channel from the registry
-#[poise::command(slash_command, required_permissions = "MANAGE_CHANNELS")]
-pub async fn remove_channel(
-    ctx: Context<'_>,
-    #[description = "Selected channel"] channel: serenity::Channel,
-) -> Result<(), Error> {
-    ctx.defer_ephemeral().await?;
-    let config = &mut ctx.data().config_manager.lock().await;
-    let channel_id = { u64::from(channel.id()) };
-    match config.channels.iter().position(|item| *item == channel_id) {
-        None => {
-            ctx.say(format!(
-                "Channel <#{channel_id}> was not in the channel registry."
-            ))
-            .await?;
-        }
-        Some(found) => {
-            config.channels.remove(found);
-            ctx.say(format!(
-                "Successfully removed <#{channel_id}> from the channel registry."
-            ))
-            .await?;
-        }
-    }
-    config.store().expect("Unable to store config");
-    info!("Executed command `remove_channel` successfully");
-    Ok(())
-}
-
-/// List channels held in the registry
-#[poise::command(slash_command, required_permissions = "MANAGE_CHANNELS")]
-pub async fn list_channels(ctx: Context<'_>) -> Result<(), Error> {
-    ctx.defer_ephemeral().await?;
-    let config = &mut ctx.data().config_manager.lock().await;
-    ctx.say(format!(
-        "Current channel IDs in registry: \n{:#?}",
-        config.channels
-    ))
-    .await?;
-    info!("Executed command `list_channels` successfully");
     Ok(())
 }
 

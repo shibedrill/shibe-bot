@@ -10,6 +10,7 @@ pub struct Manager<T: Default + Serialize + for<'a> Deserialize<'a>> {
     path: String,
 }
 
+#[allow(dead_code)]
 impl<T: Default + Serialize + for<'a> Deserialize<'a>> Manager<T> {
     /// Instantiate new self if the path contains a valid serialization of
     /// the settings structure.

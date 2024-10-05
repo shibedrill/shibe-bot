@@ -1,10 +1,5 @@
 #![forbid(unsafe_code)]
 
-// Tokio async crap
-use poise::serenity_prelude::FullEvent;
-use std::sync::Arc;
-use tokio::sync::Mutex;
-
 // For secure credential handling
 use dotenvy::dotenv;
 
@@ -16,10 +11,20 @@ extern crate pretty_env_logger;
 #[macro_use]
 extern crate log;
 
-// For managing config storage
-use serde::{Deserialize, Serialize};
+// Definitions
+mod definitions;
+use crate::definitions::*;
+use crate::definitions::event_handler as event_handler;
+
+// Settings manager
 mod settings;
-use crate::settings::Manager;
+#[allow(unused_imports)]
+use crate::settings::*;
+
+// Schema in preparation for database
+mod schema;
+#[allow(unused_imports)]
+use crate::schema::*;
 
 // Bot commands
 mod command;
@@ -32,46 +37,8 @@ use crate::command::{
     util::*,
 };
 
-// Data passed to every command (shared state)
-struct Data {
-    config_manager: Arc<Mutex<Manager<Settings>>>,
-}
-
-// Errors returnable by a command
-type Error = Box<dyn std::error::Error + Send + Sync>;
-
-// The full context passed to a command
-type Context<'a> = poise::Context<'a, Data, Error>;
-
-// The structure making up the configuration
-#[derive(Debug, Serialize, Deserialize, Default)]
-struct Settings {
-    channels: Vec<u64>,
-}
-
 // Path at which our settings are stored (currently PWD)
-const SETTINGS_PATH: &str = "settings.json";
-
-async fn event_handler(
-    _ctx: &serenity::Context,
-    event: &serenity::FullEvent,
-    _framework: poise::FrameworkContext<'_, Data, Error>,
-    data: &Data,
-) -> Result<(), Error> {
-    if let FullEvent::ChannelDelete {
-        channel,
-        messages: _,
-    } = event
-    {
-        info!("Handling event type: ChannelDelete({})", channel.id);
-        data.config_manager
-            .lock()
-            .await
-            .channels
-            .retain(|item| *item != u64::from(channel.id));
-    }
-    Ok(())
-}
+//const SETTINGS_PATH: &str = "settings.json";
 
 // Main function for setup
 #[tokio::main]
@@ -95,15 +62,6 @@ async fn main() {
     // Set up some non privileged intents
     let intents = serenity::GatewayIntents::non_privileged();
 
-    // Configure persistent options
-    let config_manager: Arc<Mutex<Manager<Settings>>> = Arc::new(Mutex::new(
-        Manager::load(SETTINGS_PATH).unwrap_or(Manager::manage(SETTINGS_PATH, Settings::default())),
-    ));
-    match config_manager.lock().await.store() {
-        Ok(_) => info!("Stored config successfully"),
-        Err(e) => error!("Failed to store config: {}", e),
-    };
-
     // Set up framework
     let framework = poise::Framework::builder()
         .options(poise::FrameworkOptions {
@@ -114,9 +72,6 @@ async fn main() {
                 // Util
                 age(),
                 info(),
-                add_channel(),
-                remove_channel(),
-                list_channels(),
                 invite(),
                 dice(),
                 // Dev
@@ -141,7 +96,7 @@ async fn main() {
             Box::pin(async move {
                 poise::builtins::register_globally(ctx, &framework.options().commands).await?;
                 // Shared data has to go here!!!
-                Ok(Data { config_manager })
+                Ok(Data {})
             })
         })
         .build();
