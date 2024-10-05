@@ -1,4 +1,3 @@
-use structstruck;
 use poise::serenity_prelude::*;
 
 structstruck::strike! {
@@ -7,7 +6,7 @@ structstruck::strike! {
         role: Role,
         message: Message,
         reaction: ReactionType,
-        variant: 
+        variant:
             #[allow(dead_code)]
             enum ReactionRoleVariant {
                 Standard,

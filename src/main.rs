@@ -13,8 +13,8 @@ extern crate log;
 
 // Definitions
 mod definitions;
+use crate::definitions::event_handler;
 use crate::definitions::*;
-use crate::definitions::event_handler as event_handler;
 
 // Settings manager
 mod settings;

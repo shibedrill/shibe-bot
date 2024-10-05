@@ -1,6 +1,5 @@
-
-use vergen::*;
 use anyhow::Error;
+use vergen::*;
 
 fn main() -> Result<(), Error> {
     let build = BuildBuilder::all_build()?;

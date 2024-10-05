@@ -1,4 +1,3 @@
-
 use crate::Context;
 use crate::Error;
 
@@ -16,7 +15,8 @@ pub async fn version(ctx: Context<'_>) -> Result<(), Error> {
         env!("VERGEN_BUILD_TIMESTAMP"),
         env!("VERGEN_CARGO_TARGET_TRIPLE"),
         env!("VERGEN_RUSTC_SEMVER"),
-    )).await?;
+    ))
+    .await?;
     Ok(())
 }
 

@@ -6,9 +6,7 @@ use poise::serenity_prelude as serenity;
 use crate::settings::*;
 
 // Data passed to every command (shared state)
-pub struct Data {
-
-}
+pub struct Data {}
 
 // Errors returnable by a command
 pub type Error = Box<dyn std::error::Error + Send + Sync>;
@@ -22,7 +20,6 @@ pub async fn event_handler(
     _framework: poise::FrameworkContext<'_, Data, Error>,
     _data: &Data,
 ) -> Result<(), Error> {
-
     // Future event handling will go here
     // Data will contain the database connection
 
