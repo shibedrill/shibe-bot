@@ -80,6 +80,7 @@ async fn main() {
                 restart(),
                 say(),
                 update(),
+                version(),
                 // Fun
                 meow(),
                 whack(),
