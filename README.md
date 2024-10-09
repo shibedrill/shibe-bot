@@ -1,4 +1,4 @@
-# Shibe Bot 0.4.0
+# Shibe Bot 0.4.1
 
 [![Rust](https://github.com/shibedrill/shibe-bot/actions/workflows/rust.yml/badge.svg)](https://github.com/shibedrill/shibe-bot/actions/workflows/rust.yml)
 [![GitHub License](https://img.shields.io/github/license/shibedrill/shibe-bot)](LICENSE.txt)

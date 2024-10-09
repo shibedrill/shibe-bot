@@ -119,7 +119,10 @@ async fn main() {
     // Build client
     let mut client = serenity::ClientBuilder::new(token, intents)
         .framework(framework)
-        .activity(ActivityData::custom(format!("Version {}!", env!("CARGO_PKG_VERSION"))))
+        .activity(ActivityData::custom(format!(
+            "Version {}!",
+            env!("CARGO_PKG_VERSION")
+        )))
         .await
         .unwrap_or_else(|e| {
             error!("Building client failed: {}", e);

@@ -3,7 +3,7 @@ name = "shibe-bot"
 description = "A Discord bot written in Rust, using Poise."
 license = "MIT"
 readme = "README.md"
-version = "0.4.0"
+version = "0.4.1"
 edition = "2021"
 build = "build.rs"
 

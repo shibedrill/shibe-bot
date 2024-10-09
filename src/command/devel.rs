@@ -5,13 +5,23 @@ use crate::Error;
 #[poise::command(slash_command)]
 pub async fn version(ctx: Context<'_>) -> Result<(), Error> {
     ctx.say(format!(
-        "Bot version: {}\n\
+        "Source:\n\
+        \tPackage version: {}\n\
+        \tCommit ID: {}\n\
+        \tCommit date: {}\n\
+        \tCommit author: {} ({})\n\
+        \tCommit message: {}\n\
         Build:\n\
         \tBuild date: {}\n\
         \tBuild timestamp: {}\n\
         \tTarget triple: {}\n\
         \trustc version: {}\n",
         env!("CARGO_PKG_VERSION"),
+        env!("GIT_COMMIT_ID"),
+        env!("GIT_COMMIT_DATE"),
+        env!("GIT_COMMIT_AUTHOR_NAME"),
+        env!("GIT_COMMIT_AUTHOR_EMAIL"),
+        env!("GIT_COMMIT_MSG"),
         env!("VERGEN_BUILD_DATE"),
         env!("VERGEN_BUILD_TIMESTAMP"),
         env!("VERGEN_CARGO_TARGET_TRIPLE"),
