@@ -87,6 +87,7 @@ async fn main() {
                 eightball(),
                 bite(),
                 deer(),
+                curbstomp(),
             ],
             initialize_owners: true,
             event_handler: |ctx, event, framework, data| {

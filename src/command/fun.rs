@@ -78,6 +78,28 @@ pub async fn whack(
     Ok(())
 }
 
+// For your enemies!
+#[poise::command(slash_command)]
+pub async fn curbstomp(
+    ctx: Context<'_>,
+    #[description = "The target user"] target: serenity::User,
+) -> Result<(), Error> {
+    let response: &str = if &target == ctx.author() {
+        "I don't think you can curbstomp yourself."
+    } else if target == **ctx.cache().current_user() {
+        "nice try lol"
+    } else {
+        &format!(
+            "{} made {} eat pavement.",
+            ctx.author(),
+            target
+        )
+    };
+    ctx.say(response).await?;
+    info!("Executed command `whack` successfully");
+    Ok(())
+}
+
 /// Magic 8-ball
 #[poise::command(slash_command)]
 pub async fn eightball(ctx: Context<'_>) -> Result<(), Error> {
