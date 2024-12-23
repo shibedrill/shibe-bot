@@ -10,7 +10,7 @@ build = "build.rs"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 [build-dependencies]
 vergen = { version = "9.0.2", features = ["build", "cargo", "rustc"] }
-anyhow = "1.0.94"
+anyhow = "1.0.95"
 
 [dependencies]
 dotenvy = "0.15.0"
