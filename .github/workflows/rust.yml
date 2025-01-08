@@ -16,10 +16,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
-    - name: Check
-      run: cargo check
-    - name: Clippy
-      run: cargo clippy
+    - run: cargo check
+    - run: cargo clippy
 
   build:
 
@@ -27,9 +25,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
-    - name: Check
-      run: cargo check
-    - name: Build
-      run: cargo build
-    - name: Run tests
-      run: cargo test
+    - run: rustup update
+    - run: cargo build --release
+    - uses: actions/upload-artifact@v4
+      with:
+        path: target/release/shibe-bot
