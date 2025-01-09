@@ -42,9 +42,12 @@ pub async fn version(ctx: Context<'_>) -> Result<(), Error> {
     Ok(())
 }
 
-/// Update the bot remotely (Requires updater systemd service)
+/// Update the bot remotely (requires Github CI)
 #[poise::command(slash_command, owners_only, hide_in_help)]
-pub async fn update(ctx: Context<'_>, override_check: bool) -> Result<(), Error> {
+pub async fn update(
+    ctx: Context<'_>,
+    #[description = "Whether to skip the update check"] override_check: bool,
+) -> Result<(), Error> {
     // Check if the current commit hash is different from HEAD
     let head: octocrab::models::repos::Ref = octocrab::instance()
         .get(
@@ -56,7 +59,8 @@ pub async fn update(ctx: Context<'_>, override_check: bool) -> Result<(), Error>
         if sha == env!("GIT_COMMIT_ID") {
             if override_check {
                 info!("Update unnecessary, but check overridden.");
-                ctx.say("Update unecessary, but check overridden. Updating.").await?;
+                ctx.say("Update unecessary, but check overridden. Updating.")
+                    .await?;
                 let Err(what) = self_update();
                 error!("Update failed: {}", what);
                 ctx.say(format!("Error occurred while updating: {}", what))
@@ -73,7 +77,8 @@ pub async fn update(ctx: Context<'_>, override_check: bool) -> Result<(), Error>
                 .await?;
         }
     } else {
-        ctx.say("Update failed: Object field in response is not a Commit.").await?;
+        ctx.say("Update failed: Object field in response is not a Commit.")
+            .await?;
         error!("Checking for updates failed: Response field incorrect type");
     }
     Ok(())
@@ -126,7 +131,6 @@ fn self_update() -> Result<Infallible, Error> {
     dest.write_all(&content)?;
     trace!("Downloaded latest build artifact successfully");
 
-    
     let mut archive = zip::ZipArchive::new(dest)?;
     trace!("Created zip archive reader");
     let mut zipped_bin = archive.by_index(0)?;
@@ -137,12 +141,26 @@ fn self_update() -> Result<Infallible, Error> {
     std::io::copy(&mut zipped_bin, &mut new_bin)?;
     trace!("Extracted binary successfully");
 
+    let new_command_path = std::env::current_exe()?;
+
+    trace!("Testing file prior to replace");
+    {
+        let _ = std::fs::File::open(&new_command_path)?;
+    }
+
     self_replace::self_replace(&new_bin_path)?;
     trace!("Replaced self with new binary successfully");
 
+    trace!("Testing file after replace");
+    {
+        let _ = std::fs::File::open(&new_command_path)?;
+    }
+
     let new_command_args: Vec<_> = std::env::args_os().skip(1).collect();
-    let new_command_path = std::env::current_exe()?;
-    trace!("Got current executable path successfully: {}", new_command_path.display());
+    trace!(
+        "Got current executable path successfully: {}",
+        new_command_path.display()
+    );
 
     Err(Box::new(
         std::process::Command::new(new_command_path)
@@ -154,16 +172,15 @@ fn self_update() -> Result<Infallible, Error> {
 mod test {
 
     #[cfg(test)]
-    use std::convert::Infallible;
-    #[cfg(test)]
     use crate::Error;
+    #[cfg(test)]
+    use std::convert::Infallible;
 
     #[test]
     fn test_self_update() -> Result<Infallible, Error> {
-        use pretty_env_logger;
         use crate::command::devel::self_update;
+        use pretty_env_logger;
         pretty_env_logger::init();
         self_update()
     }
-
 }

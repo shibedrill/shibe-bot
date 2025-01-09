@@ -47,6 +47,10 @@ async fn main() {
     // Initialize logging
     pretty_env_logger::init();
     info!("Initialized logger successfully");
+    info!(
+        "Current executable path: {}",
+        std::env::current_exe().unwrap()
+    );
     // Get secure env vars from .env file
     match dotenv() {
         Ok(_) => info!("Loaded env vars from .env successfully"),
