@@ -10,6 +10,8 @@ use std::io::Write;
 use self_replace;
 use zip;
 
+use minreq;
+
 /// Print version and build information
 #[poise::command(slash_command)]
 pub async fn version(ctx: Context<'_>) -> Result<(), Error> {
@@ -55,7 +57,7 @@ pub async fn update(ctx: Context<'_>) -> Result<(), Error> {
             info!("Update unnecessary: Commit ID of remote is same as compiled commit.");
         } else {
             info!("Update required, latest commit hash: {}", sha);
-            let Err(what) = self_update().await;
+            let Err(what) = self_update();
             error!("Update failed: {}", what);
             ctx.say(format!("Error occurred while updating: {}", what))
                 .await?;
@@ -103,29 +105,24 @@ pub async fn say(
     Ok(())
 }
 
-async fn self_update() -> Result<Infallible, Error> {
+fn self_update() -> Result<Infallible, Error> {
     let artifact_url = "https://nightly.link/shibedrill/shibe-bot/workflows/rust/main/artifact.zip";
     let tempdir = tempfile::Builder::new().prefix("shibe-bot").tempdir()?;
-    let response = reqwest::get(artifact_url).await?;
+    trace!("Created tempdir successfully: {}", tempdir.path().display());
+    let response = minreq::get(artifact_url).send()?;
 
-    let mut dest = {
-        let fname = response
-            .url()
-            .path_segments()
-            .and_then(|segments| segments.last())
-            .and_then(|name| if name.is_empty() { None } else { Some(name) })
-            .unwrap_or("tmp");
-        let fname = tempdir.path().join(fname);
-        std::fs::File::create(fname)?
-    };
-    let content = response.bytes().await?;
+    let mut dest = std::fs::File::create_new(tempdir.path().join("artifact.zip"))?;
+    let content = response.as_bytes();
     dest.write_all(&content)?;
     trace!("Downloaded latest build artifact successfully");
 
+    
     let mut archive = zip::ZipArchive::new(dest)?;
+    trace!("Created zip archive reader");
     let mut zipped_bin = archive.by_index(0)?;
     let new_bin_path = tempdir.path().join("shibe-bot");
     let mut new_bin = std::fs::File::create_new(&new_bin_path)?;
+    trace!("Created new file for binary");
 
     std::io::copy(&mut zipped_bin, &mut new_bin)?;
     trace!("Extracted binary successfully");
@@ -135,10 +132,28 @@ async fn self_update() -> Result<Infallible, Error> {
 
     let new_command_args: Vec<_> = std::env::args_os().skip(1).collect();
     let new_command_path = std::env::current_exe()?;
+    trace!("Got current executable path successfully: {}", new_command_path.display());
 
     Err(Box::new(
         std::process::Command::new(new_command_path)
             .args(&new_command_args)
             .exec(),
     ))
+}
+
+mod test {
+
+    #[cfg(test)]
+    use std::convert::Infallible;
+    #[cfg(test)]
+    use crate::Error;
+
+    #[test]
+    fn test_self_update() -> Result<Infallible, Error> {
+        use pretty_env_logger;
+        use crate::command::devel::self_update;
+        pretty_env_logger::init();
+        self_update()
+    }
+
 }
