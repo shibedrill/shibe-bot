@@ -3,7 +3,7 @@ name = "shibe-bot"
 description = "A Discord bot written in Rust, using Poise."
 license = "MIT"
 readme = "README.md"
-version = "0.4.2"
+version = "1.0.0"
 edition = "2021"
 build = "build.rs"
 
@@ -23,3 +23,10 @@ serde = { version = "1.0.217", features = ["serde_derive"] }
 serde_json = "1.0.134"
 roux = "2.2.13"
 structstruck = "0.4.1"
+reqwest = { version = "0.12.12", features = ["json"] }
+octocrab = "0.42.1"
+tempfile = "3.15.0"
+self-replace = "1.5.0"
+zip = "2.2.2"
+nix = { version = "0.29.0", features = ["process"] }
+minreq = { version = "2.13.0", features = ["https"] }

@@ -89,11 +89,7 @@ pub async fn curbstomp(
     } else if target == **ctx.cache().current_user() {
         "nice try lol"
     } else {
-        &format!(
-            "{} made {} eat pavement.",
-            ctx.author(),
-            target
-        )
+        &format!("{} made {} eat pavement.", ctx.author(), target)
     };
     ctx.say(response).await?;
     info!("Executed command `whack` successfully");
