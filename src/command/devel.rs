@@ -156,17 +156,20 @@ fn self_update() -> Result<Infallible, Error> {
         let _ = std::fs::File::open(&new_command_path)?;
     }
 
-    let new_command_args: Vec<_> = std::env::args_os().skip(1).collect();
+    //let new_command_args: Vec<_> = std::env::args_os().skip(1).collect();
     trace!(
         "Got current executable path successfully: {}",
         new_command_path.display()
     );
 
-    Err(Box::new(
-        std::process::Command::new(new_command_path)
-            .args(&new_command_args)
-            .exec(),
-    ))
+    let mut command = std::process::Command::new("systemctl");
+
+    let command = command
+        .arg("--user")
+        .arg("restart")
+        .arg("shibe-bot");
+
+    Err(Box::new(command.exec()))
 }
 
 mod test {
