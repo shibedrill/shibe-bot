@@ -49,7 +49,7 @@ async fn main() {
     info!("Initialized logger successfully");
     info!(
         "Current executable path: {}",
-        std::env::current_exe().unwrap()
+        std::env::current_exe().unwrap().display()
     );
     // Get secure env vars from .env file
     match dotenv() {
