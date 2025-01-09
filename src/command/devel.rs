@@ -44,7 +44,7 @@ pub async fn version(ctx: Context<'_>) -> Result<(), Error> {
 
 /// Update the bot remotely (Requires updater systemd service)
 #[poise::command(slash_command, owners_only, hide_in_help)]
-pub async fn update(ctx: Context<'_>) -> Result<(), Error> {
+pub async fn update(ctx: Context<'_>, override_check: bool) -> Result<(), Error> {
     // Check if the current commit hash is different from HEAD
     let head: octocrab::models::repos::Ref = octocrab::instance()
         .get(
@@ -54,7 +54,17 @@ pub async fn update(ctx: Context<'_>) -> Result<(), Error> {
         .await?;
     if let octocrab::models::repos::Object::Commit { sha, url: _ } = head.object {
         if sha == env!("GIT_COMMIT_ID") {
-            info!("Update unnecessary: Commit ID of remote is same as compiled commit.");
+            if override_check {
+                info!("Update unnecessary, but check overridden.");
+                ctx.say("Update unecessary, but check overridden. Updating.").await?;
+                let Err(what) = self_update();
+                error!("Update failed: {}", what);
+                ctx.say(format!("Error occurred while updating: {}", what))
+                    .await?;
+            } else {
+                info!("Update unnecessary: Commit ID of remote is same as compiled commit.");
+                ctx.say("Update unnecessary.").await?;
+            }
         } else {
             info!("Update required, latest commit hash: {}", sha);
             let Err(what) = self_update();
