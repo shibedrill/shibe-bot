@@ -42,12 +42,13 @@ pub async fn info(ctx: Context<'_>) -> Result<(), Error> {
         rustc version: {}\n\
         Build timestamp: {}\n\
         Website: <https://riverdev.carrd.co>\n\
-        Source code: <https://github.com/shibedrill/shibe-bot>\n\
+        Source code: <{}>\n\
         Poise: <https://docs.rs/poise/latest/poise/>\n\
         Rust: <https://www.rust-lang.org/>",
         env!("CARGO_PKG_VERSION"),
         env!("VERGEN_RUSTC_SEMVER"),
         env!("VERGEN_BUILD_TIMESTAMP"),
+        env!("GIT_REMOTE_URL"),
     ))
     .await?;
     info!("Executed command `info` successfully");

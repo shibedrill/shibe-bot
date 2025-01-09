@@ -12,9 +12,17 @@ fn main() -> Result<(), Error> {
         .add_instructions(&rustc)?
         .emit()?;
 
-    let git_commit_id = std::process::Command::new("git")
+    let git_remote_url = std::process::Command::new("git")
+        .arg("config")
+        .arg("remote.origin.url")
+        .output()?;
+    let git_commit_id_short = std::process::Command::new("git")
         .arg("rev-parse")
         .arg("--short")
+        .arg("HEAD")
+        .output()?;
+    let git_commit_id = std::process::Command::new("git")
+        .arg("rev-parse")
         .arg("HEAD")
         .output()?;
     let git_commit_date = std::process::Command::new("git")
@@ -39,8 +47,16 @@ fn main() -> Result<(), Error> {
         .output()?;
 
     println!(
+        "cargo:rustc-env=GIT_REMOTE_URL={}",
+        String::from_utf8(git_remote_url.stdout)?
+    );
+    println!(
         "cargo:rustc-env=GIT_COMMIT_ID={}",
         String::from_utf8(git_commit_id.stdout)?
+    );
+    println!(
+        "cargo:rustc-env=GIT_COMMIT_ID_SHORT={}",
+        String::from_utf8(git_commit_id_short.stdout)?
     );
     println!(
         "cargo:rustc-env=GIT_COMMIT_DATE={}",
