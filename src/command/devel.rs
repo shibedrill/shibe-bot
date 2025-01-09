@@ -55,8 +55,14 @@ pub async fn update(ctx: Context<'_>) -> Result<(), Error> {
             info!("Update unnecessary: Commit ID of remote is same as compiled commit.");
         } else {
             info!("Update required, latest commit hash: {}", sha);
+            let Err(what) = self_update().await;
+            error!("Update failed: {}", what);
+            ctx.say(format!("Error occurred while updating: {}", what))
+                .await?;
         }
     } else {
+        ctx.say("Update failed: Object field in response is not a Commit.").await?;
+        error!("Checking for updates failed: Response field incorrect type");
     }
     Ok(())
 }
@@ -114,6 +120,7 @@ async fn self_update() -> Result<Infallible, Error> {
     };
     let content = response.bytes().await?;
     dest.write_all(&content)?;
+    trace!("Downloaded latest build artifact successfully");
 
     let mut archive = zip::ZipArchive::new(dest)?;
     let mut zipped_bin = archive.by_index(0)?;
@@ -121,14 +128,17 @@ async fn self_update() -> Result<Infallible, Error> {
     let mut new_bin = std::fs::File::create_new(&new_bin_path)?;
 
     std::io::copy(&mut zipped_bin, &mut new_bin)?;
+    trace!("Extracted binary successfully");
 
     self_replace::self_replace(&new_bin_path)?;
+    trace!("Replaced self with new binary successfully");
 
     let new_command_args: Vec<_> = std::env::args_os().skip(1).collect();
     let new_command_path = std::env::current_exe()?;
-    
-    Err(Box::new(std::process::Command::new(new_command_path)
-        .args(&new_command_args)
-        .exec()))
 
+    Err(Box::new(
+        std::process::Command::new(new_command_path)
+            .args(&new_command_args)
+            .exec(),
+    ))
 }
