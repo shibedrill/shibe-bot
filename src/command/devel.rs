@@ -48,6 +48,7 @@ pub async fn update(
     ctx: Context<'_>,
     #[description = "Whether to skip the update check"] override_check: bool,
 ) -> Result<(), Error> {
+    ctx.defer().await?;
     // Check if the current commit hash is different from HEAD
     let head: octocrab::models::repos::Ref = octocrab::instance()
         .get(
@@ -128,7 +129,7 @@ fn self_update() -> Result<Infallible, Error> {
 
     let mut dest = std::fs::File::create_new(tempdir.path().join("artifact.zip"))?;
     let content = response.as_bytes();
-    dest.write_all(&content)?;
+    dest.write_all(content)?;
     trace!("Downloaded latest build artifact successfully");
 
     let mut archive = zip::ZipArchive::new(dest)?;
@@ -164,10 +165,7 @@ fn self_update() -> Result<Infallible, Error> {
 
     let mut command = std::process::Command::new("systemctl");
 
-    let command = command
-        .arg("--user")
-        .arg("restart")
-        .arg("shibe-bot");
+    let command = command.arg("--user").arg("restart").arg("shibe-bot");
 
     Err(Box::new(command.exec()))
 }

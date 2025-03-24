@@ -1,5 +1,7 @@
 #![forbid(unsafe_code)]
 
+use std::env;
+
 // For secure credential handling
 use dotenvy::dotenv;
 
@@ -47,10 +49,10 @@ async fn main() {
     // Initialize logging
     pretty_env_logger::init();
     info!("Initialized logger successfully");
-    info!(
-        "Current executable path: {}",
-        std::env::current_exe().unwrap().display()
-    );
+    match env::current_exe() {
+        Ok(exe) => info!("Got current exe successfully: {}", exe.display()),
+        Err(err) => error!("Failed to get exe: {}", err),
+    }
     // Get secure env vars from .env file
     match dotenv() {
         Ok(_) => info!("Loaded env vars from .env successfully"),

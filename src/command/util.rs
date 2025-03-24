@@ -62,8 +62,8 @@ pub async fn dice(
     #[description = "The amount of sides on the dice"] sides: u32,
 ) -> Result<(), Error> {
     let answer: u32 = {
-        let mut rng = rand::thread_rng();
-        rng.gen_range(1..=sides)
+        let mut rng = rand::rng();
+        rng.random_range(1..=sides)
     };
     let response = match sides {
         0 | 1 => {

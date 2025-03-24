@@ -2,8 +2,7 @@ use crate::Context;
 use crate::Error;
 
 use poise::serenity_prelude as serenity;
-
-use rand::prelude::SliceRandom;
+use rand::seq::IndexedRandom;
 use rand::Rng;
 
 use roux::util::{FeedOption, TimePeriod};
@@ -30,8 +29,8 @@ pub async fn meow(ctx: Context<'_>) -> Result<(), Error> {
         "bwrrrr,,,",
     ];
     let response = {
-        let mut rng = rand::thread_rng();
-        if rng.gen_bool(0.05) {
+        let mut rng = rand::rng();
+        if rng.random_bool(0.05) {
             "woof"
             // Will never return None. The source is statically defined.
             // We know it will always have items in it.
@@ -122,7 +121,7 @@ pub async fn eightball(ctx: Context<'_>) -> Result<(), Error> {
         "Very doubtful",
     ];
     let response = {
-        let mut rng = rand::thread_rng();
+        let mut rng = rand::rng();
         responses
             .choose(&mut rng)
             .ok_or("Response array is empty".to_string())
@@ -164,7 +163,7 @@ pub async fn deer(ctx: Context<'_>) -> Result<(), Error> {
     let options = FeedOption::new().period(TimePeriod::ThisYear);
     let hot = subreddit.hot(50, Some(options)).await?;
     let chosen_post = {
-        let mut rng = rand::thread_rng();
+        let mut rng = rand::rng();
         hot.data
             .children
             .choose(&mut rng)
